@@ -1,5 +1,6 @@
 """Module imports"""
 
+from shutil import ExecError
 import discord
 
 import editdatabase
@@ -17,16 +18,21 @@ class Listserver():
         """search for server with specific properties"""
         self.data.clear()
         self.page = 0
-        if self.msg != "":
+        if self.msg != None and self.msg != "":
             await self.msg.delete()
+
+        print(self.data)
 
         if option == "version":
             database = editdatabase.Databasemanager().onserversget()
-            for server in database:
-                if server[1].find(properties) != -1:
-                    self.data.append(server)
-                    self.properties = properties
-            await self.embed(ctx, "version") # embed for displaying info
+            try:
+                for server in database:
+                    if server[1].find(properties) != -1:
+                        self.data.append(server)
+                        self.properties = properties
+                await self.embed(ctx) # embed for displaying info
+            except:
+                await ctx.channel.send("no servers were found with the given properties")
         elif option == "players":
             database = editdatabase.Databasemanager().onserversget()
             try:
@@ -43,14 +49,15 @@ class Listserver():
                         if server[2] == int(properties):
                             self.data.append(server)
                             self.properties = properties
-                    await self.embed(ctx, "players") # embed for displaying info
+                    await self.embed(ctx) # embed for displaying info
             except:
                 await ctx.channel.send("no servers were found with the given properties")
         else:
             await ctx.channel.send("unknown option given, options: -version, -players")
+        properties = None
 
 
-    async def embed(self, ctx, cmd=None):
+    async def embed(self, ctx):
         """embed for list func"""
 
         counter = self.page * 10
@@ -59,21 +66,21 @@ class Listserver():
         embed = None
 
         # embed for displaying info
-        if cmd == "version":
-            embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers " +
-                                                            "with the version " +
-                                                            f"{self.properties}", color=0xFF0000)
-        elif cmd == "players":
-            embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers " +
-                                                            f"with {self.properties} players"
+        embed = discord.Embed(title="Servers", description="List of servers with " +
+                                                            "with specific properties"
                                                             , color=0xFF0000)
         while counter < len(self.data) and lenghcount < 10:
-            out += f"{counter + 1}. IP: {self.data[counter][0]} | version: {self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
+            out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\
+                   f"{self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
             counter += 1
             lenghcount += 1
         embed.add_field(name=f"Page: {self.page + 1}", value=out,
                            inline=False)
-        self.msg = await ctx.channel.send(embed=embed)
+        try:
+            self.msg = await ctx.channel.send(embed=embed)
+        except Exception as e:
+            self.msg = None
+            print("error: " + str(e))
         await self.msg.add_reaction("⏮️")
         await self.msg.add_reaction("⏭️")
 
@@ -84,8 +91,9 @@ class Listserver():
         lenghcount = 0
         counter = self.page * 10
 
-        embededit = discord.Embed(title="Servers", description=f"found {len(self.data)} with the" +
-                                                               f" version {self.properties}", color=0xFF7373)
+        embededit = discord.Embed(title="Servers", description="List of servers with " +
+                                                            "with specific properties"
+                                                            , color=0xFF0000)
         while(counter < len(self.data) and lenghcount < 10):
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\
                    f"{self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
