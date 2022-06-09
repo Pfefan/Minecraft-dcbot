@@ -1,6 +1,8 @@
 """module import"""
 import discord
 from discord.ext import commands
+import asyncio
+import autorun
 
 import authenticator
 
@@ -13,9 +15,9 @@ async def on_ready():
     """func when the bots has loaded and is online"""
 
     print('Logged in as: ' + client.user.name)
-    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening,
+    await asyncio.gather(client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening,
                                                            name="-help"),
-                                                           status=discord.Status.do_not_disturb)
+                                                           status=discord.Status.do_not_disturb), autorun.Autorun().main())
     print('Ready!\n')
 
 @client.event

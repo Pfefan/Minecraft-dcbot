@@ -4,8 +4,6 @@ from threading import Thread
 
 import requests
 
-import editdatabase
-import serverlookup
 
 
 class CMD():

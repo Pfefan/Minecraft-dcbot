@@ -1,21 +1,23 @@
+import editdatabase
 
 class Main:
     """Manage playeraktivies on servers"""
     def __init__(self):
-        pass
+        self.dbmanger = editdatabase.Databasemanager()
 
-    def main(self, ctx, message=None):
+    def main(self, ctx, cmd=None, message=None):
         """main class to control diffrent commands"""
-        if message == "add":
-            self.add(ctx)
-        elif message == "list":
+        if cmd == "add":
+            self.add(ctx, message)
+        elif cmd == "list":
             self.listwatchserver(ctx)
-        elif message.split("")[0] == "details":
-            self.details(message, ctx)
+        elif cmd.split("")[0] == "details":
+            self.details(cmd, ctx)
 
-    def add(self, ctx):
+    async def add(self, ctx, message):
         """add a new server to the database which is gona be watched"""
-        pass
+        self.dbmanger.plyhistoryadd(message)
+        await ctx.channel.send("added server")
 
     def listwatchserver(self, ctx):
         """list all servers which are being watched"""

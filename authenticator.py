@@ -5,6 +5,7 @@ import onlineserverlookup
 import detailscmd
 import listcmd
 import onlinecmd
+import playeraktivitycmd
 
 
 class DCcmd(commands.Cog):
@@ -13,10 +14,11 @@ class DCcmd(commands.Cog):
     def __init__(self, client):
         """init func"""
         self.client = client
-        self.onlookup = onlineserverlookup.Autolookup()
+        self.onlookup = onlineserverlookup.lookup()
         self.onlinecmd = onlinecmd.OnlineCmd()
         self.detailscmd = detailscmd.Details()
         self.listcmd = listcmd.Listserver()
+        self.watch = playeraktivitycmd.Main()
 
     @commands.command()
     async def onlinelookup (self, ctx):
@@ -32,6 +34,11 @@ class DCcmd(commands.Cog):
     async def details(self, ctx, message=None):
         """command to get details about a server"""
         await self.detailscmd.main(ctx, message)
+
+    @commands.command()
+    async def serverwatch(self, ctx, cmd=None, message=None):
+        """command to get details about a server"""
+        await self.watch.main(ctx, cmd, message)
 
     @commands.command()
     async def list(self, ctx, message=None, properties=None):

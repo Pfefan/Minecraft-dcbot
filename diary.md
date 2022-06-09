@@ -84,3 +84,15 @@ Multithreaded player search
 #### 14:15 - 17:35
 
 Fixed embeds for -list players and version, moved databases and database structure files in a subdirectory, moved pingserver to a seprate file to automaticly ping every 1 hour 
+
+### 5.5.2022
+
+### 14:55 - 17:35
+
+working on serverhistory fixing issues
+
+### 24.5.2022
+
+#### 14:04 - 17:35
+
+working on displaying player activity on a server, modifyed exeptions in listcmd

@@ -1,8 +1,6 @@
 """module imports"""
 import sqlalchemy
-from data.servers import Base, Server
-from data.onlineservers import Base as onBase, Server as onServer
-from data.serverhistory import Base as Base_h, Server as server_h
+from data.createdb import Base, Onlineserver, Watchserverinfo, Watchserverip, Defaultserver
 
 class Databasemanager():
     """Databasemanage"""
@@ -15,62 +13,63 @@ class Databasemanager():
         self.session_servers.configure(bind=db_servers)
 
         db_onlineservers = sqlalchemy.create_engine("sqlite:///data/onlineservers.db")
-        onBase.metadata.create_all(db_onlineservers)
+        Base.metadata.create_all(db_onlineservers)
         self.session_onlineservers = sqlalchemy.orm.sessionmaker()
         self.session_onlineservers.configure(bind=db_onlineservers)
 
-        db_serverhistory = sqlalchemy.create_engine("sqlite:///data/serverhistory.db")
-        Base_h.metadata.create_all(db_serverhistory)
-        self.session_serverhistory = sqlalchemy.orm.sessionmaker()
-        self.session_serverhistory.configure(bind=db_serverhistory)
+        db_playerhistory = sqlalchemy.create_engine("sqlite:///data/playerhistory.db")
+        Base.metadata.create_all(db_playerhistory)
+        self.session_playerhistory = sqlalchemy.orm.sessionmaker()
+        self.session_playerhistory.configure(bind=db_playerhistory)
+
+        db_playerhistoryip = sqlalchemy.create_engine("sqlite:///data/playerhistoryip.db")
+        Base.metadata.create_all(db_playerhistoryip)
+        self.session_playerhistoryip = sqlalchemy.orm.sessionmaker()
+        self.session_playerhistoryip.configure(bind=db_playerhistoryip)
 
     def get(self, primary_key):
         """returns a specific id out of the database"""
         with self.session_servers() as session:
-            return session.query(Server).get(primary_key).server_hostname
+            return session.query(Defaultserver).get(primary_key).server_hostname
 
     def lengh(self):
         """returns the lengh of the database"""
         with self.session_servers() as session:
-            return session.query(Server).count()
+            return session.query(Defaultserver).count()
 
     def all(self):
         """returns all hostnames entries of the database"""
         hostnames = []
         with self.session_servers() as session:
-            database = session.query(Server).all()
+            database = session.query(Defaultserver).all()
             for i in database:
                 hostnames.append(i.server_hostname)
             return hostnames
 
     def onserverssave(self, data):
         """saves online servers to a history database and then it adds the new entries to the online database"""
-        database = ""
-        lengh = 0
         with self.session_onlineservers() as session:
-            lengh = session.query(onServer).count()
-            database = session.query(onServer).all()
-        if lengh > 0:
-            with self.session_serverhistory() as hsession:
-                for i in database:
-                    hsession.add(server_h(hostname=i.hostname, version=i.version,
-                                          onplayer=i.onplayer))
-                hsession.commit()
-        with self.session_onlineservers() as session:
-            session.query(onServer).delete()
+            session.query(Onlineserver).delete()
             session.commit()
 
         with self.session_onlineservers() as session:
             for i in data:
-                onserverdb = onServer(hostname=i[0], version=i[1], onplayer=i[2])
+                onserverdb = Onlineserver(hostname=i[0], version=i[1], onplayer=i[2])
                 session.add(onserverdb)
             session.commit()
 
     def onserversget(self):
-        """returns all entries of database"""
+        """returns all entries of database """
         serverinfo = []
         with self.session_onlineservers() as session:
-            database = session.query(onServer).all()
+            database = session.query(Onlineserver).all()
             for i in database:
                 serverinfo.append((i.hostname, i.version, i.onplayer, i.timestamp))
             return serverinfo
+
+    def plyhistoryadd(self, data):
+        """saves a new History entry into database"""
+        with self.session_playerhistory as session:
+            entry = Watchserverip(id=data)
+            session.add(entry)
+            session.commit()

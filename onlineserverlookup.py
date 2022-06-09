@@ -4,15 +4,16 @@ from threading import Thread
 
 import editdatabase
 import serverlookup
+import time
 
 
-class Autolookup():
+class lookup():
     """class to automaticly ping all servers in the database"""
     def __init__(self) -> None:
         self.data = []
         self.threadcounter = 0
 
-    async def onlinecmd(self, ctx):
+    async def onlinecmd(self):
         """class to search through the hole database for servers with players online"""
         self.data.clear()
         threadlengh = 10
@@ -20,8 +21,10 @@ class Autolookup():
         outadresses = []
         ping_threads = []
 
-        infomsg = await ctx.channel.send("searching for servers with" +
-                                         " players online")
+        #infomsg = await ctx.channel.send("searching for servers with" +
+        #                                 " players online")
+
+        print("search for servers")
 
         for adress in adresses:
             while self.threadcounter > 200:
@@ -42,8 +45,12 @@ class Autolookup():
         print(f"found {len(self.data)} servers with players online " +
                 f"out of {editdatabase.Databasemanager().lengh()}")
 
-        await infomsg.delete()
+        #await infomsg.delete()
 
-        await ctx.channel.send(f"found {len(self.data)} servers with players online " +
-                f"out of {editdatabase.Databasemanager().lengh()} use -online to view")
+        #await ctx.channel.send(f"found {len(self.data)} servers with players online " +
+        #        f"out of {editdatabase.Databasemanager().lengh()} use -online to view")
         editdatabase.Databasemanager().onserverssave(self.data)
+
+if "__main__" == __name__:
+    lookup().onlinecmd()
+    time.sleep(1800)

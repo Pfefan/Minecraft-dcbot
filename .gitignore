@@ -9,6 +9,8 @@ __pycache__/
 #custom
 *.jpg
 *.txt
+playerhistory.db
+playerhistoryip.db
 onlineservers.db
 serverhistory.db
 
