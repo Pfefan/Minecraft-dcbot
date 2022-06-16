@@ -9,10 +9,9 @@ __pycache__/
 #custom
 *.jpg
 *.txt
+onlineservers.db
 playerhistory.db
 playerhistoryip.db
-onlineservers.db
-serverhistory.db
 
 # Distribution / packaging
 .Python

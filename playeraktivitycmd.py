@@ -1,28 +1,44 @@
 import editdatabase
+import discord
 
 class Main:
     """Manage playeraktivies on servers"""
     def __init__(self):
         self.dbmanger = editdatabase.Databasemanager()
 
-    def main(self, ctx, cmd=None, message=None):
+    async def main(self, ctx, cmd=None, message=None):
         """main class to control diffrent commands"""
         if cmd == "add":
-            self.add(ctx, message)
+            await self.add(ctx, message)
         elif cmd == "list":
-            self.listwatchserver(ctx)
-        elif cmd.split("")[0] == "details":
-            self.details(cmd, ctx)
-
+            await self.listwatchserver(ctx)
+        elif cmd == "remove":
+            await self.remove(ctx, message)
     async def add(self, ctx, message):
         """add a new server to the database which is gona be watched"""
         self.dbmanger.plyhistoryadd(message)
         await ctx.channel.send("added server")
 
-    def listwatchserver(self, ctx):
+    async def listwatchserver(self, ctx):
         """list all servers which are being watched"""
-        pass
+        counter = 1
+        data = self.dbmanger.plyhistoryall()
+        if len(data) == 0:
+            await ctx.channel.send("No servers are being watched")
+        else:
+            embed = discord.Embed(title="Watching servers", description="A List " +
+                                 "of servers which are watched", color=0xFFA500)
+            for i in data:
+                embed.add_field(name=f"{counter}.", value=i, inline=False)
+                counter += 1
+            await ctx.channel.send(embed=embed)
 
-    def details(self, message, ctx):
+    async def remove(self, ctx, message):
+        """remove a server from the database"""
+        self.dbmanger.plyhistoryremove(message)
+        await ctx.channel.send("removed server")
+        
+
+    async def details(self, message, ctx):
         """print all player activities which are logged in the database"""
         pass

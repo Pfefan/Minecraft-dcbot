@@ -13,7 +13,7 @@ class lookup():
         self.data = []
         self.threadcounter = 0
 
-    async def onlinecmd(self):
+    def onlinecmd(self):
         """class to search through the hole database for servers with players online"""
         self.data.clear()
         threadlengh = 10
@@ -21,10 +21,7 @@ class lookup():
         outadresses = []
         ping_threads = []
 
-        #infomsg = await ctx.channel.send("searching for servers with" +
-        #                                 " players online")
-
-        print("search for servers")
+        print("searching for online servers")
 
         for adress in adresses:
             while self.threadcounter > 200:
@@ -45,10 +42,6 @@ class lookup():
         print(f"found {len(self.data)} servers with players online " +
                 f"out of {editdatabase.Databasemanager().lengh()}")
 
-        #await infomsg.delete()
-
-        #await ctx.channel.send(f"found {len(self.data)} servers with players online " +
-        #        f"out of {editdatabase.Databasemanager().lengh()} use -online to view")
         editdatabase.Databasemanager().onserverssave(self.data)
 
 if "__main__" == __name__:

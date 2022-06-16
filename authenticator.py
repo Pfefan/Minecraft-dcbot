@@ -36,7 +36,7 @@ class DCcmd(commands.Cog):
         await self.detailscmd.main(ctx, message)
 
     @commands.command()
-    async def serverwatch(self, ctx, cmd=None, message=None):
+    async def watch(self, ctx, cmd=None, message=None):
         """command to get details about a server"""
         await self.watch.main(ctx, cmd, message)
 

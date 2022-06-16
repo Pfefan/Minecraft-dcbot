@@ -1,23 +1,24 @@
 """module import"""
+from threading import Thread
+
 import discord
 from discord.ext import commands
-import asyncio
-import autorun
 
 import authenticator
+import autorun
 
 cogs = [authenticator]
 
 client = commands.Bot(command_prefix='-')
-
+Thread(target=autorun.Autorun().main).start() #starting autorun thread to automaticly execute tasks
 @client.event
 async def on_ready():
     """func when the bots has loaded and is online"""
 
     print('Logged in as: ' + client.user.name)
-    await asyncio.gather(client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening,
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening,
                                                            name="-help"),
-                                                           status=discord.Status.do_not_disturb), autorun.Autorun().main())
+                                                           status=discord.Status.do_not_disturb)
     print('Ready!\n')
 
 @client.event

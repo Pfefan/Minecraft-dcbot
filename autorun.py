@@ -1,12 +1,11 @@
-import asyncio
-import onlineserverlookup
 import time
+import playeraktivitylookup
 
 class Autorun():
     def __init__(self) -> None:
         pass
 
-    async def main(self):
-        online = onlineserverlookup.lookup()
-        #await asyncio.gather(online.onlinecmd())
-        time.sleep(600)
+    def main(self):
+        while(True):
+            playeraktivitylookup.Main().main()
+            time.sleep(600)
