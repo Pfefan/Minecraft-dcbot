@@ -8,7 +8,7 @@ __pycache__/
 
 #custom
 *.png
-*.txt
+token.txt
 onlineservers.db
 playerhistory.db
 .vscode/
