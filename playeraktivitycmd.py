@@ -1,9 +1,10 @@
 """Module imports"""
+from datetime import datetime
+
 import discord
 import matplotlib.pyplot as plt
 
 import editdatabase
-from datetime import datetime
 
 
 class Main:

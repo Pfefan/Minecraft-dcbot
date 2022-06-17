@@ -10,25 +10,25 @@ import playeraktivitycmd
 
 class DCcmd(commands.Cog):
     """discord commands"""
- 
+
     def __init__(self, client):
         """init func"""
         self.client = client
         self.onlookup = onlineserverlookup.Lookup()
         self.onlinecmd = onlinecmd.OnlineCmd()
         self.detailscmd = detailscmd.Details()
+        self.watchserver = playeraktivitycmd.Main()
         self.listcmd = listcmd.Listserver()
-        self.watch = playeraktivitycmd.Main()
-
-    @commands.command()
-    async def onlinelookup (self, ctx):
-        """command to get servers with players online"""
-        await self.onlookup.onlinecmd(ctx)
 
     @commands.command()
     async def online (self, ctx, message=None):
         """command to get servers with players online"""
         await self.onlinecmd.showembed(ctx, message)
+
+    @commands.command()
+    async def onlinelookup (self, ctx):
+        """goes through all servers and checks if they are online"""
+        await self.onlookup.onlinecmd(ctx)
 
     @commands.command()
     async def details(self, ctx, message=None):
@@ -38,7 +38,7 @@ class DCcmd(commands.Cog):
     @commands.command()
     async def watch(self, ctx, cmd=None, message=None):
         """command to get details about a server"""
-        await self.watch.main(ctx, cmd, message)
+        await self.watchserver.main(ctx, cmd, message)
 
     @commands.command()
     async def list(self, ctx, message=None, properties=None):
