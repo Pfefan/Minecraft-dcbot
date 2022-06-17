@@ -56,7 +56,8 @@ class Main:
 
         for i in data:
             playerdata.append(i[0])
-            datetimedata.append(datetime.strptime(i[2], "%m.%d %H:%M"))
+            datetimedata.append(i[2].strftime("%d-%H"))
+        print(datetimedata)
 
         fig, axis = plt.subplots()
         axis.plot(datetimedata, playerdata)
