@@ -39,15 +39,15 @@ class Details():
     async def embed(self, ctx, server, hostname):
         """embed for details command"""
         status = server.status()
-        path = "pics/details.jpg"
+        path = "pics/details.png"
         # gets the favicon of the minecraft server
         img_data = status.favicon
         if img_data is not None:
             response = urllib.request.urlopen(img_data)
             os.makedirs(os.path.dirname(path), exist_ok=True)
-            with open('pics/details.jpg', 'wb') as file:
+            with open('pics/details.png', 'wb') as file:
                 file.write(response.file.read())
-                file = discord.File('pics/details.jpg', filename="details.jpg")
+                file = discord.File('pics/details.png', filename="details.png")
 
         # embed for displaying infos
         embed = discord.Embed(title="Details about a Server", description="motd: " +
@@ -62,7 +62,7 @@ class Details():
                            inline=False)
         embed.add_field(name="Geolocation", value=databasecmd.CMD().geolocation(hostname),
                            inline=False)
-        embed.set_image(url='attachment://details.jpg')
+        embed.set_image(url='attachment://details.png')
         if img_data is not None:
             await ctx.channel.send(embed=embed, file=file)
         else:

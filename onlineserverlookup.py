@@ -4,10 +4,8 @@ from threading import Thread
 
 import editdatabase
 import serverlookup
-import time
 
-
-class lookup():
+class Lookup():
     """class to automaticly ping all servers in the database"""
     def __init__(self) -> None:
         self.data = []
@@ -20,8 +18,6 @@ class lookup():
         adresses = editdatabase.Databasemanager().all()
         outadresses = []
         ping_threads = []
-
-        print("searching for online servers")
 
         for adress in adresses:
             while self.threadcounter > 200:
@@ -43,7 +39,3 @@ class lookup():
                 f"out of {editdatabase.Databasemanager().lengh()}")
 
         editdatabase.Databasemanager().onserverssave(self.data)
-
-if "__main__" == __name__:
-    lookup().onlinecmd()
-    time.sleep(1800)

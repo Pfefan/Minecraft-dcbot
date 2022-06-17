@@ -7,11 +7,11 @@ __pycache__/
 *.so
 
 #custom
-*.jpg
+*.png
 *.txt
 onlineservers.db
 playerhistory.db
-playerhistoryip.db
+.vscode/
 
 # Distribution / packaging
 .Python

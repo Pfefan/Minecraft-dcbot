@@ -1,5 +1,9 @@
-import editdatabase
+"""Module imports"""
 import discord
+import matplotlib.pyplot as plt
+
+import editdatabase
+
 
 class Main:
     """Manage playeraktivies on servers"""
@@ -14,6 +18,9 @@ class Main:
             await self.listwatchserver(ctx)
         elif cmd == "remove":
             await self.remove(ctx, message)
+        elif cmd == "info":
+            await self.info(message, ctx)
+
     async def add(self, ctx, message):
         """add a new server to the database which is gona be watched"""
         self.dbmanger.plyhistoryadd(message)
@@ -37,8 +44,27 @@ class Main:
         """remove a server from the database"""
         self.dbmanger.plyhistoryremove(message)
         await ctx.channel.send("removed server")
-        
 
-    async def details(self, message, ctx):
-        """print all player activities which are logged in the database"""
-        pass
+
+    async def info(self, message, ctx):
+        """return info of a selected server"""
+        data = self.dbmanger.plyhistoryinfoget(message)
+        playerdata = []
+        datetime = []
+
+        for i in data:
+            playerdata.append(i[0])
+            datetime.append(i[2])
+
+        fig, axis = plt.subplots()
+        axis.plot(datetime, playerdata)
+
+        axis.set(xlabel='datetime', ylabel='players',
+            title=f'player data of {message}')
+        axis.grid()
+
+        fig.savefig("pics/diagramm.png")
+
+        with open('pics/diagramm.png', 'rb') as file:
+            picture = discord.File(file)
+            await ctx.channel.send(file=picture)

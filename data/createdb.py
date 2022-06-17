@@ -1,8 +1,8 @@
 """module imports"""
 import datetime
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Table
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import declarative_base
 
 defaultbase = declarative_base()
 watchbase = declarative_base()
@@ -22,7 +22,7 @@ class Watchserverinfo(watchbase):
 
     id = Column(Integer, primary_key=True)
     onplayer = Column(Integer)
-    hostname = Column(Integer, ForeignKey("watchhostnames.id"),
+    hostname = Column(String, ForeignKey("watchhostnames.id"),
                       nullable=False)
     timestamp = Column(DateTime, default=datetime.datetime.now)
 

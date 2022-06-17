@@ -14,7 +14,7 @@ class DCcmd(commands.Cog):
     def __init__(self, client):
         """init func"""
         self.client = client
-        self.onlookup = onlineserverlookup.lookup()
+        self.onlookup = onlineserverlookup.Lookup()
         self.onlinecmd = onlinecmd.OnlineCmd()
         self.detailscmd = detailscmd.Details()
         self.listcmd = listcmd.Listserver()

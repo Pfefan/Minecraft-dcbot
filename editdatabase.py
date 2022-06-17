@@ -1,6 +1,7 @@
 """module imports"""
 import sqlalchemy
-from data.createdb import defaultbase, onbase, watchbase, Onlineserver, Watchserverinfo, Watchserverip, Defaultserver
+from data.createdb import defaultbase, onbase, watchbase
+from data.createdb import Onlineserver, Watchserverinfo, Watchserverip, Defaultserver
 
 class Databasemanager():
     """Databasemanage"""
@@ -42,7 +43,8 @@ class Databasemanager():
             return hostnames
 
     def onserverssave(self, data):
-        """saves online servers to a history database and then it adds the new entries to the online database"""
+        """saves online servers to a history database
+         and then it adds the new entries to the online database"""
         with self.session_onlineservers() as session:
             session.query(Onlineserver).delete()
             session.commit()
@@ -68,7 +70,7 @@ class Databasemanager():
             entry = Watchserverip(id=data)
             session.add(entry)
             session.commit()
-    
+
     def plyhistoryall(self):
         """returns all entries saved in database"""
         entries = []
@@ -87,6 +89,15 @@ class Databasemanager():
     def plyhistoryinfosave(self, _hostname, _players):
         """saves info for a certain server"""
         with self.session_playerhistory() as session:
-            entry = Watchserverinfo(onplayer=_players)
+            entry = Watchserverinfo(hostname = _hostname, onplayer=_players)
             session.add(entry)
             session.commit()
+
+    def plyhistoryinfoget(self, _hostname):
+        """returns info for a certain server"""
+        entries = []
+        with self.session_playerhistory() as session:
+            database = session.query(Watchserverinfo).filter(Watchserverinfo.hostname == _hostname).all()
+            for i in database:
+                entries.append((i.onplayer, i.hostname, i.timestamp))
+        return entries
