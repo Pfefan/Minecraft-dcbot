@@ -5,6 +5,7 @@ import discord
 import matplotlib.pyplot as plt
 
 import editdatabase
+import numpy as np
 
 
 class Main:
@@ -56,9 +57,9 @@ class Main:
 
         for i in data:
             playerdata.append(i[0])
-            datetimedata.append(i[2].strftime("%d-%H"))
-        print(datetimedata)
+            datetimedata.append(i[2])
 
+        plt.xticks(np.arange(max(datetimedata), 5))
         fig, axis = plt.subplots()
         axis.plot(datetimedata, playerdata)
 
