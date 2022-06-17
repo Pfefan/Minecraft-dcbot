@@ -11,7 +11,6 @@ class Main:
 
     def main(self):
         """pings servers an gets amount of players online"""
-        print("started")
         servers = self.dbmanger.plyhistoryall()
         for i in servers:
             try:

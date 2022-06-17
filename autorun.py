@@ -14,5 +14,5 @@ class Autorun():
         while True:
             for i in range(6):
                 playeraktivitylookup.Main().main()
-                time.sleep(100)
+                time.sleep(600)
             onlineserverlookup.Lookup().onlinecmd()

@@ -3,6 +3,7 @@ import discord
 import matplotlib.pyplot as plt
 
 import editdatabase
+from datetime import datetime
 
 
 class Main:
@@ -50,14 +51,14 @@ class Main:
         """return info of a selected server"""
         data = self.dbmanger.plyhistoryinfoget(message)
         playerdata = []
-        datetime = []
+        datetimedata = []
 
         for i in data:
             playerdata.append(i[0])
-            datetime.append(i[2])
+            datetimedata.append(datetime.strptime(i[2], "%m.%d %H:%M"))
 
         fig, axis = plt.subplots()
-        axis.plot(datetime, playerdata)
+        axis.plot(datetimedata, playerdata)
 
         axis.set(xlabel='datetime', ylabel='players',
             title=f'player data of {message}')
