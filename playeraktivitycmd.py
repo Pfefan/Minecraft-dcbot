@@ -1,11 +1,9 @@
 """Module imports"""
-from datetime import datetime
-
 import discord
 import matplotlib.pyplot as plt
+import numpy as np
 
 import editdatabase
-import numpy as np
 
 
 class Main:
@@ -59,8 +57,8 @@ class Main:
             playerdata.append(i[0])
             datetimedata.append(i[2])
 
-        plt.xticks(np.arange(max(datetimedata), 5))
         fig, axis = plt.subplots()
+        plt.tight_layout()
         axis.plot(datetimedata, playerdata)
 
         axis.set(xlabel='datetime', ylabel='players',
