@@ -11,5 +11,5 @@ class Autorun():
     def main(self):
         """main class"""
         while True:
-            playeraktivitylookup.Main().main()
+            playeraktivitylookup.main()
             time.sleep(600)

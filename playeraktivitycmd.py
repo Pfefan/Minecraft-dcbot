@@ -1,7 +1,6 @@
 """Module imports"""
 import discord
 import matplotlib.pyplot as plt
-import numpy as np
 
 import editdatabase
 
@@ -57,7 +56,7 @@ class Main:
             playerdata.append(i[0])
             datetimedata.append(i[2])
 
-        fig, axis = plt.subplots()
+        fig, axis = plt.subplots(figsize=(16, 9))
         plt.tight_layout()
         axis.plot(datetimedata, playerdata)
 
