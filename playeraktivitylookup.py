@@ -12,4 +12,10 @@ def main():
             status = JavaServer.lookup(i).status()
             dbmanger.plyhistoryinfosave(i, status.players.online)
         except IOError:
-            dbmanger.plyhistoryinfosave(i, "0")
+            try:
+                if len(i.split(":")) == 2:
+                    return
+                status = JavaServer.lookup(i).status()
+                dbmanger.plyhistoryinfosave(i, status.players.online)
+            except IOError:
+                return

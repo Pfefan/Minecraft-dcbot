@@ -20,6 +20,8 @@ class Main:
             await self.remove(ctx, message)
         elif cmd == "info":
             await self.info(message, ctx)
+        else:
+            await ctx.channel.send("unknown command")
 
     async def add(self, ctx, message):
         """add a new server to the database which is gona be watched"""

@@ -84,7 +84,9 @@ class Databasemanager():
         """removes a specific entry from database"""
         with self.session_playerhistory() as session:
             session.query(Watchserverip).filter(Watchserverip.id == data).delete()
+            session.query(Watchserverinfo).filter(Watchserverinfo.hostname == data).delete()
             session.commit()
+
 
     def plyhistoryinfosave(self, _hostname, _players):
         """saves info for a certain server"""
