@@ -57,7 +57,7 @@ class Main:
             datetimedata.append(i[2])
 
         fig, axis = plt.subplots(figsize=(16, 9))
-        plt.tight_layout()
+        # plt.tight_layout()
         axis.plot(datetimedata, playerdata)
 
         axis.set(xlabel='datetime', ylabel='players',

@@ -96,3 +96,40 @@ working on serverhistory fixing issues
 #### 14:04 - 17:35
 
 working on displaying player activity on a server, modifyed exeptions in listcmd
+
+### 9.6.2022
+
+#### 14:55 - 17:35
+
+Added mutlti prozessing so other code can be run without affecting the main programm, started to work on logging the playeractivity
+
+### 16.06.2022
+
+#### # 10.00 - 20.00
+
+working on logging playeractivity and remade the database so the data can be stored more logical
+
+### 17.06.2022
+
+#### 10.00 - 20.00
+
+used mathlib libary to display data info in discord, added a requirements.txt so required libaries can be install more easily working on plot so text wont overlap anymore
+
+### 18.06.2022
+
+#### 10.00 - 20.00
+
+Updated Readme, removed ".vscode" folder from repository
+
+### 19.06.2022
+
+#### 13.00 - 14.00
+
+Fixed overlapping text
+
+### 21.06.2022
+
+### 11:35 - 13:15
+
+changed diagramm size
+
