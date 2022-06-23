@@ -28,7 +28,7 @@ class Listserver():
             if len(self.data) > 0:
                 await self.embed(ctx) # embed for displaying info
             else:
-                await ctx.channel.send("no servers were found with the given properties")
+                self.msg = await ctx.channel.send("no servers were found with the given properties")
         elif option == "players":
             database = editdatabase.Databasemanager().onserversget()
             if len(properties.split("-")) > 1:
@@ -46,9 +46,9 @@ class Listserver():
             if len(self.data) > 0:
                 await self.embed(ctx) # embed for displaying info
             else:
-                await ctx.channel.send("no servers were found with the given properties")
+                self.msg = await ctx.channel.send("no servers were found with the given properties")
         else:
-            await ctx.channel.send("unknown option given, options: -version, -players")
+            self.msg = await ctx.channel.send("unknown option given, options: -version, -players")
         properties = None
 
 
