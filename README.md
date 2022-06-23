@@ -1,6 +1,8 @@
-# Server-database-dcbot
+# Server-database-dcbot (unfinished)
 
 A programm to get Detailed information about minecraft servers
+
+To use the prgramm you will need to create a file named "token.txt" with your discord bot token inside
 
 Currently available features are:
 
