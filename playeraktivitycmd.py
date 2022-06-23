@@ -1,4 +1,6 @@
 """Module imports"""
+import os
+
 import discord
 import matplotlib.pyplot as plt
 
@@ -62,9 +64,13 @@ class Main:
         # plt.tight_layout()
         axis.plot(datetimedata, playerdata)
 
-        axis.set(xlabel='datetime', ylabel='players',
+        axis.set(xlabel='datetime m-d H:M', ylabel='players',
             title=f'player data of {message}')
         axis.grid()
+
+        direxist = os.path.exists("pics/")
+        if not direxist:
+            os.makedirs("pics/")
 
         fig.savefig("pics/diagramm.png")
 

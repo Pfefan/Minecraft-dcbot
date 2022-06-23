@@ -19,9 +19,7 @@ class Listserver():
         self.data.clear()
         self.page = 0
         if self.msg != None and self.msg != "":
-            await self.msg.delete()
-
-        print(self.data)
+            await self.msg.delete()  #deletes last message
 
         if option == "version":
             database = editdatabase.Databasemanager().onserversget()
@@ -76,11 +74,8 @@ class Listserver():
             lenghcount += 1
         embed.add_field(name=f"Page: {self.page + 1}", value=out,
                            inline=False)
-        try:
-            self.msg = await ctx.channel.send(embed=embed)
-        except Exception as e:
-            self.msg = None
-            print("error: " + str(e))
+        self.msg = await ctx.channel.send(embed=embed)
+
         await self.msg.add_reaction("⏮️")
         await self.msg.add_reaction("⏭️")
 
