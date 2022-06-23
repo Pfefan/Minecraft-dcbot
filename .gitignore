@@ -9,8 +9,7 @@ __pycache__/
 #custom
 *.png
 token.txt
-onlineservers.db
-playerhistory.db
+database.db
 .vscode/
 
 # Distribution / packaging

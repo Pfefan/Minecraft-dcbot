@@ -38,7 +38,7 @@ class Main:
             await ctx.channel.send("No servers are being watched")
         else:
             embed = discord.Embed(title="Watching servers", description="A List " +
-                                 "of servers which are watched", color=0xFFA500)
+                                 "of servers which are watched", color=0xFFFF00)
             for i in data:
                 embed.add_field(name=f"{counter}.", value=i, inline=False)
                 counter += 1

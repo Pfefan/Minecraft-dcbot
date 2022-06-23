@@ -5,17 +5,16 @@ from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_base
 
 defaultbase = declarative_base()
-watchbase = declarative_base()
-onbase = declarative_base()
+dbbase = declarative_base()
 
-class Watchserverip(watchbase):
+class Watchserverip(dbbase):
     """creating Server"""
 
     __tablename__ = "watchhostnames"
 
     id = Column(String, primary_key=True)
 
-class Watchserverinfo(watchbase):
+class Watchserverinfo(dbbase):
     """creating Server"""
 
     __tablename__ = "watchinfo"
@@ -26,7 +25,7 @@ class Watchserverinfo(watchbase):
                       nullable=False)
     timestamp = Column(DateTime, default=datetime.datetime.now)
 
-class Onlineserver(onbase):
+class Onlineserver(dbbase):
     """creating Server"""
 
     __tablename__ = "onlineservers"
