@@ -94,7 +94,8 @@ class Databasemanager():
         """returns info for a certain server"""
         entries = []
         with self.session_database() as session:
-            database = session.query(Watchserverinfo).filter(Watchserverinfo.hostname == _hostname).all()
+            database = session.query(Watchserverinfo) \
+                              .filter(Watchserverinfo.hostname == _hostname).all()
             for i in database:
                 entries.append((i.onplayer, i.hostname, i.timestamp))
         return entries

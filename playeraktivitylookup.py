@@ -1,8 +1,10 @@
 """module imports"""
+import datetime
+
 from mcstatus import JavaServer
 
 import editdatabase
-import datetime
+
 
 def main():
     """pings servers an gets amount of players online"""

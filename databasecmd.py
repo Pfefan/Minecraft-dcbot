@@ -4,14 +4,13 @@ from threading import Thread
 
 import requests
 
-
-
 class CMD():
     """functions to execute in the discord bot"""
 
     def __init__(self) -> None:
         """class variables"""
-        self.players = ""   
+        self.players = ""
+        self.threadcounter = 0
 
 
     def getplayernames(self, server):

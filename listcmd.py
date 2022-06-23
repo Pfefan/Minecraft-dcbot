@@ -21,32 +21,31 @@ class Listserver():
 
         if option == "version":
             database = editdatabase.Databasemanager().onserversget()
-            try:
-                for server in database:
-                    if server[1].find(properties) != -1:
-                        self.data.append(server)
-                        self.properties = properties
+            for server in database:
+                if server[1].find(properties) != -1:
+                    self.data.append(server)
+                    self.properties = properties
+            if len(self.data) > 0:
                 await self.embed(ctx) # embed for displaying info
-            except:
+            else:
                 await ctx.channel.send("no servers were found with the given properties")
         elif option == "players":
             database = editdatabase.Databasemanager().onserversget()
-            try:
-                if len(properties.split("-")) > 1:
-                    maxplayers = int(properties.split("-")[1]) # splits up max min amount
-                    minplayers = int(properties.split("-")[0])
-                    for server in database: # search through every entriy in the database
-                        if server[2] >= int(minplayers) and server[2] <= int(maxplayers):
-                            self.data.append(server)
-                            self.properties = properties
-                    await self.embed(ctx)
-                else:
-                    for server in database: # search through every entriy in the database
-                        if server[2] == int(properties):
-                            self.data.append(server)
-                            self.properties = properties
-                    await self.embed(ctx) # embed for displaying info
-            except:
+            if len(properties.split("-")) > 1:
+                maxplayers = int(properties.split("-")[1]) # splits up max min amount
+                minplayers = int(properties.split("-")[0])
+                for server in database: # search through every entriy in the database
+                    if server[2] >= int(minplayers) and server[2] <= int(maxplayers):
+                        self.data.append(server)
+                        self.properties = properties
+            else:
+                for server in database: # search through every entriy in the database
+                    if server[2] == int(properties):
+                        self.data.append(server)
+                        self.properties = properties
+            if len(self.data) > 0:
+                await self.embed(ctx) # embed for displaying info
+            else:
                 await ctx.channel.send("no servers were found with the given properties")
         else:
             await ctx.channel.send("unknown option given, options: -version, -players")

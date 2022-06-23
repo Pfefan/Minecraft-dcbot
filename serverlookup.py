@@ -20,7 +20,7 @@ class Ping():
                 self.tcount.data.append((self.hostname[counter], status.version.name,
                                          status.players.online))
             except IOError:
-                pass       
+                pass
             counter += 1
 
         self.tcount.threadcounter -= 1

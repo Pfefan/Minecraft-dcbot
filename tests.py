@@ -12,6 +12,4 @@ def test_plyhistoryaddrem():
     dbmanager.plyhistoryremove("testserver")
     data = dbmanager.plyhistoryall()
     assert "testserver" not in data
-
-
-            
+   
