@@ -8,7 +8,7 @@ import editdatabase
 
 
 class Main:
-    """Manage playeraktivies on servers"""
+    """Manage playeraktivites on servers"""
     def __init__(self):
         self.dbmanger = editdatabase.Databasemanager()
 
@@ -21,7 +21,7 @@ class Main:
         elif cmd == "remove":
             await self.remove(ctx, message)
         elif cmd == "info":
-            await self.info(message, ctx)
+            await self.info(ctx, message)
         else:
             await ctx.channel.send("unknown command")
 
@@ -50,7 +50,7 @@ class Main:
         await ctx.channel.send("removed server")
 
 
-    async def info(self, message, ctx):
+    async def info(self, ctx, message):
         """return info of a selected server"""
         data = self.dbmanger.plyhistoryinfoget(message)
         playerdata = []

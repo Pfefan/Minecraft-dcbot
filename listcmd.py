@@ -1,6 +1,4 @@
 """Module imports"""
-
-from shutil import ExecError
 import discord
 
 import editdatabase

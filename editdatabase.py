@@ -1,4 +1,5 @@
 """module imports"""
+from html import entities
 import sqlalchemy
 from data.createdb import defaultbase, onbase, watchbase
 from data.createdb import Onlineserver, Watchserverinfo, Watchserverip, Defaultserver
@@ -103,3 +104,18 @@ class Databasemanager():
             for i in database:
                 entries.append((i.onplayer, i.hostname, i.timestamp))
         return entries
+
+    def plyhistorygettime(self):
+        """returns all entries with timestamp"""
+        entries = []
+        with self.session_playerhistory() as session:
+            database = session.query(Watchserverinfo).all()
+            for i in database:
+                entries.append((i.id, i.timestamp))
+        return entries
+
+    def plyhistoryautodel(self, data):
+        """deletes to old entries"""
+        with self.session_playerhistory() as session:
+            session.query(Watchserverinfo).filter(Watchserverinfo.id == data).delete()
+            session.commit()
