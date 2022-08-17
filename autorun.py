@@ -10,6 +10,7 @@ class Autorun():
 
     def main(self):
         """main class"""
+        print("started autolookup")
         while True:
             try:
                 playeraktivitylookup.main()
