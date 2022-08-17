@@ -21,7 +21,8 @@ def main():
                     return
                 status = JavaServer.lookup(i).status()
                 dbmanger.plyhistoryinfosave(i, status.players.online)
-            except IOError:
+            except IOError as er:
+                print(er)
                 return
 
 def delold():
