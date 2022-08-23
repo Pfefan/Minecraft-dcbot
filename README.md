@@ -17,4 +17,5 @@ Currently available features are:
 
 # To do
 -list: list servers with multiple properties example: 1players version:1.19.2
+
 -watch: get the optimal time to join a server when the least players are online
