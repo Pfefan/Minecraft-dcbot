@@ -13,10 +13,10 @@ class Databasemanager():
         self.session_servers = sqlalchemy.orm.sessionmaker()
         self.session_servers.configure(bind=db_servers)
 
-        db_datase = sqlalchemy.create_engine("sqlite:///data/database.db")
-        dbbase.metadata.create_all(db_datase)
+        db_database = sqlalchemy.create_engine("sqlite:///data/database.db")
+        dbbase.metadata.create_all(db_database)
         self.session_database = sqlalchemy.orm.sessionmaker()
-        self.session_database.configure(bind=db_datase)
+        self.session_database.configure(bind=db_database)
 
     def get(self, primary_key):
         """returns a specific id out of the database"""
