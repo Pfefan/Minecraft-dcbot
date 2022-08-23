@@ -1,4 +1,4 @@
-# Server-database-dcbot (unfinished)
+# Minecraft-dcbot (unfinished)
 
 A programm to get Detailed information about minecraft servers
 
