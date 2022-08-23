@@ -20,36 +20,52 @@ class Listserver():
             await self.msg.delete()  #deletes last message
 
         if option == "version":
-            database = editdatabase.Databasemanager().onserversget()
-            for server in database:
-                if server[1].find(properties) != -1:
-                    self.data.append(server)
-                    self.properties = properties
+            self.data = self.getversion(properties)
+
             if len(self.data) > 0:
                 await self.embed(ctx) # embed for displaying info
             else:
                 self.msg = await ctx.channel.send("no servers were found with the given properties")
+
         elif option == "players":
-            database = editdatabase.Databasemanager().onserversget()
-            if len(properties.split("-")) > 1:
-                maxplayers = int(properties.split("-")[1]) # splits up max min amount
-                minplayers = int(properties.split("-")[0])
-                for server in database: # search through every entriy in the database
-                    if server[2] >= int(minplayers) and server[2] <= int(maxplayers):
-                        self.data.append(server)
-                        self.properties = properties
-            else:
-                for server in database: # search through every entriy in the database
-                    if server[2] == int(properties):
-                        self.data.append(server)
-                        self.properties = properties
+            self.data = self.getplayers(properties)
+
             if len(self.data) > 0:
                 await self.embed(ctx) # embed for displaying info
+
             else:
                 self.msg = await ctx.channel.send("no servers were found with the given properties")
+
         else:
             self.msg = await ctx.channel.send("unknown option given, options: -version, -players")
-        properties = None
+
+    def getplayers(self, properties):
+        """gets servers with specific player numbers"""
+        database = editdatabase.Databasemanager().onserversget()
+        data = []
+        if len(properties.split("-")) > 1:
+            maxplayers = int(properties.split("-")[1]) # splits up max min amount
+            minplayers = int(properties.split("-")[0])
+            for server in database: # search through every entriy in the database
+                if server[2] >= int(minplayers) and server[2] <= int(maxplayers):
+                    data.append(server)
+                    self.properties = properties
+        else:
+            for server in database: # search through every entriy in the database
+                if server[2] == int(properties):
+                    data.append(server)
+                    self.properties = properties
+        return data
+
+    def getversion(self, properties):
+        """gets servers with a certain version"""
+        database = editdatabase.Databasemanager().onserversget()
+        data = []
+        for server in database:
+            if server[1].find(properties) != -1:
+                data.append(server)
+                self.properties = properties
+        return data
 
 
     async def embed(self, ctx):
@@ -61,7 +77,7 @@ class Listserver():
         embed = None
 
         # embed for displaying info
-        embed = discord.Embed(title="Servers", description="List of servers with " +
+        embed = discord.Embed(title="Servers", description=f"found {len(self.data)} " +
                                                             "with specific properties"
                                                             , color=0xFF0000)
         while counter < len(self.data) and lenghcount < 10:
@@ -83,7 +99,7 @@ class Listserver():
         lenghcount = 0
         counter = self.page * 10
 
-        embededit = discord.Embed(title="Servers", description="List of servers with " +
+        embededit = discord.Embed(title="Servers", description=f"found {len(self.data)} " +
                                                             "with specific properties"
                                                             , color=0xFF0000)
         while(counter < len(self.data) and lenghcount < 10):

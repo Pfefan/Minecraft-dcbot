@@ -22,6 +22,8 @@ class Main:
             await self.remove(ctx, message)
         elif cmd == "info":
             await self.info(ctx, message)
+        elif cmd == "opttime":
+            await self.opttime(ctx, message)
         else:
             await ctx.channel.send("unknown command")
 
@@ -48,6 +50,11 @@ class Main:
         """remove a server from the database"""
         self.dbmanger.plyhistoryremove(message)
         await ctx.channel.send("removed server")
+
+    async def opttime(self, ctx, message):
+        """get optimal time to join a server when the least players are online"""
+        data = self.dbmanger.plyhistoryinfoget(message)
+        await ctx.channel.send(min(data))
 
 
     async def info(self, ctx, message):

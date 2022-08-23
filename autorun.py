@@ -14,6 +14,6 @@ class Autorun():
         while True:
             try:
                 playeraktivitylookup.main()
-            except Exception as e:
-                print(e)
+            except Exception as error:
+                print(error)
             time.sleep(600)
