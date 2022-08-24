@@ -8,63 +8,72 @@ class Listserver():
     """Listserver Class"""
     def __init__(self) -> None:
         self.data = []
+        self.olddata = []
         self.page = 0
         self.msg = ""
-        self.properties = ""
 
-    async def main(self, ctx, option, properties):
+    async def main(self, ctx, option, properties, useolddata):
         """search for server with specific properties"""
+        print(useolddata)
         self.data.clear()
         self.page = 0
         if self.msg != None and self.msg != "":
             await self.msg.delete()  #deletes last message
 
         if option == "version":
-            self.data = self.getversion(properties)
+            if useolddata:
+                self.olddata = self.data
+            self.data = self.getversion(properties, useolddata)
 
             if len(self.data) > 0:
                 await self.embed(ctx) # embed for displaying info
             else:
                 self.msg = await ctx.channel.send("no servers were found with the given properties")
+            self.olddata = self.data
 
         elif option == "players":
-            self.data = self.getplayers(properties)
+            self.data = await self.getplayers(properties, useolddata)
 
             if len(self.data) > 0:
                 await self.embed(ctx) # embed for displaying info
-
             else:
                 self.msg = await ctx.channel.send("no servers were found with the given properties")
+            self.olddata = self.data
 
         else:
             self.msg = await ctx.channel.send("unknown option given, options: -version, -players")
 
-    def getplayers(self, properties):
+    async def getplayers(self, properties, olddata):
         """gets servers with specific player numbers"""
-        database = editdatabase.Databasemanager().onserversget()
+        if olddata:
+            serverlist = self.olddata
+        else:
+            serverlist = editdatabase.Databasemanager().onserversget()
         data = []
         if len(properties.split("-")) > 1:
             maxplayers = int(properties.split("-")[1]) # splits up max min amount
             minplayers = int(properties.split("-")[0])
-            for server in database: # search through every entriy in the database
+            for server in serverlist: # search through every entriy in the database
                 if server[2] >= int(minplayers) and server[2] <= int(maxplayers):
                     data.append(server)
-                    self.properties = properties
         else:
-            for server in database: # search through every entriy in the database
+            for server in serverlist: # search through every entriy in the database
                 if server[2] == int(properties):
                     data.append(server)
-                    self.properties = properties
         return data
 
-    def getversion(self, properties):
+    def getversion(self, properties, olddata):
         """gets servers with a certain version"""
-        database = editdatabase.Databasemanager().onserversget()
+        if olddata:
+            serverlist = self.olddata
+        else:
+            serverlist = editdatabase.Databasemanager().onserversget()
+
+        serverlist = editdatabase.Databasemanager().onserversget()
         data = []
-        for server in database:
+        for server in serverlist:
             if server[1].find(properties) != -1:
                 data.append(server)
-                self.properties = properties
         return data
 
 
