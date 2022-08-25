@@ -41,9 +41,9 @@ class DCcmd(commands.Cog):
         await self.watchserver.main(ctx, cmd, message)
 
     @commands.command()
-    async def list(self, ctx, message=None, properties=None, useold=False):
+    async def list(self, ctx, message=None, properties=None):
         """command to List specific servers"""
-        await self.listcmd.main(ctx, message, properties, useold)
+        await self.listcmd.main(ctx, message, properties)
 
     async def on_reaction(self, reaction, user):
         """on reaction"""

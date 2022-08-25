@@ -1,6 +1,5 @@
 """Module imports"""
 import discord
-
 import editdatabase
 
 
@@ -8,47 +7,38 @@ class Listserver():
     """Listserver Class"""
     def __init__(self) -> None:
         self.data = []
-        self.olddata = []
         self.page = 0
         self.msg = ""
 
-    async def main(self, ctx, option, properties, useolddata):
+    async def main(self, ctx, option, properties):
         """search for server with specific properties"""
-        print(useolddata)
         self.data.clear()
         self.page = 0
         if self.msg != None and self.msg != "":
             await self.msg.delete()  #deletes last message
 
         if option == "version":
-            if useolddata:
-                self.olddata = self.data
-            self.data = self.getversion(properties, useolddata)
+            self.data = await self.getversion(properties)
 
             if len(self.data) > 0:
                 await self.embed(ctx) # embed for displaying info
             else:
                 self.msg = await ctx.channel.send("no servers were found with the given properties")
-            self.olddata = self.data
 
         elif option == "players":
-            self.data = await self.getplayers(properties, useolddata)
+            self.data = await self.getplayers(properties)
 
             if len(self.data) > 0:
                 await self.embed(ctx) # embed for displaying info
             else:
                 self.msg = await ctx.channel.send("no servers were found with the given properties")
-            self.olddata = self.data
 
         else:
             self.msg = await ctx.channel.send("unknown option given, options: -version, -players")
 
-    async def getplayers(self, properties, olddata):
+    async def getplayers(self, properties):
         """gets servers with specific player numbers"""
-        if olddata:
-            serverlist = self.olddata
-        else:
-            serverlist = editdatabase.Databasemanager().onserversget()
+        serverlist = editdatabase.Databasemanager().onserversget()
         data = []
         if len(properties.split("-")) > 1:
             maxplayers = int(properties.split("-")[1]) # splits up max min amount
@@ -62,14 +52,10 @@ class Listserver():
                     data.append(server)
         return data
 
-    def getversion(self, properties, olddata):
+    async def getversion(self, properties):
         """gets servers with a certain version"""
-        if olddata:
-            serverlist = self.olddata
-        else:
-            serverlist = editdatabase.Databasemanager().onserversget()
-
         serverlist = editdatabase.Databasemanager().onserversget()
+
         data = []
         for server in serverlist:
             if server[1].find(properties) != -1:
