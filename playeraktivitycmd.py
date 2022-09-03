@@ -1,4 +1,6 @@
 """Module imports"""
+import datetime
+import itertools
 import os
 
 import discord
@@ -54,7 +56,36 @@ class Main:
     async def opttime(self, ctx, message):
         """get optimal time to join a server when the least players are online"""
         data = self.dbmanger.plyhistoryinfoget(message)
-        await ctx.channel.send(min(data))
+        counter = 0
+        minplayers = 9999999999999
+        mintimestamp = ""
+        avgplayer = 0
+        avgtime = []
+
+        mindaydata = []
+        daylist = [list(group) for k, group in itertools.groupby([i[2] for i in data],
+                                                                 key=datetime.datetime.toordinal)]
+        for day in daylist:
+            for datestamp in day:
+                if data[counter][0] < minplayers:
+                    minplayers = data[counter][0]
+                    mintimestamp = datestamp
+                counter += 1
+            mindaydata.append((minplayers, mintimestamp))
+            minplayers = 9999999999999
+
+        for players in mindaydata:
+            avgplayer += players[0]
+            avgtime.append(players[1])
+        avgplayer = avgplayer / len(mindaydata)
+        avgtime=datetime.datetime.strftime(datetime.datetime.fromtimestamp(sum(map(datetime.datetime.timestamp,avgtime))/len(avgtime)),"%H:%M:%S")
+        
+        embed = discord.Embed(title="Opttime", description="Most inactive server hours",
+                              color=0x00fff0)
+        embed.add_field(name="average: ", value=f"players:{avgplayer} | time: {avgtime}", inline=False)
+        for day in mindaydata:
+            embed.add_field(name=f"{day[1].strftime('%d.%m %H:%M')}", value=(day[0]), inline=True)
+        await ctx.channel.send(embed=embed)
 
 
     async def info(self, ctx, message):

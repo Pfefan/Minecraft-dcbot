@@ -6,6 +6,7 @@ import detailscmd
 import listcmd
 import onlinecmd
 import playeraktivitycmd
+import autorun
 
 
 class DCcmd(commands.Cog):
@@ -18,6 +19,7 @@ class DCcmd(commands.Cog):
         self.onlinecmd = onlinecmd.OnlineCmd()
         self.detailscmd = detailscmd.Details()
         self.watchserver = playeraktivitycmd.Main()
+        self.autorun = autorun.Autorun()
         self.listcmd = listcmd.Listserver()
 
     @commands.command()
@@ -39,6 +41,11 @@ class DCcmd(commands.Cog):
     async def watch(self, ctx, cmd=None, message=None):
         """playeractivity on a server"""
         await self.watchserver.main(ctx, cmd, message)
+
+    @commands.command()
+    async def autorunconfig(self, ctx, repeattime=None):
+        """changes autoconfig time in minutes"""
+        await self.autorun.changerepeattime(ctx, repeattime)
 
     @commands.command()
     async def list(self, ctx, message=None, properties=None):

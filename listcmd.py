@@ -18,7 +18,11 @@ class Listserver():
             await self.msg.delete()  #deletes last message
 
         if option == "version":
-            self.data = await self.getversion(properties)
+            serverlist = editdatabase.Databasemanager().onserversget()
+
+            for server in serverlist:
+                if server[1].find(properties) != -1:
+                    self.data.append(server)
 
             if len(self.data) > 0:
                 await self.embed(ctx) # embed for displaying info
@@ -26,7 +30,17 @@ class Listserver():
                 self.msg = await ctx.channel.send("no servers were found with the given properties")
 
         elif option == "players":
-            self.data = await self.getplayers(properties)
+            serverlist = editdatabase.Databasemanager().onserversget()
+            if len(properties.split("-")) > 1:
+                maxplayers = int(properties.split("-")[1]) # splits up max min amount
+                minplayers = int(properties.split("-")[0])
+                for server in serverlist: # search through every entriy in the database
+                    if server[2] >= int(minplayers) and server[2] <= int(maxplayers):
+                        self.data.append(server)
+            else:
+                for server in serverlist: # search through every entriy in the database
+                    if server[2] == int(properties):
+                        self.data.append(server)
 
             if len(self.data) > 0:
                 await self.embed(ctx) # embed for displaying info
@@ -35,32 +49,6 @@ class Listserver():
 
         else:
             self.msg = await ctx.channel.send("unknown option given, options: -version, -players")
-
-    async def getplayers(self, properties):
-        """gets servers with specific player numbers"""
-        serverlist = editdatabase.Databasemanager().onserversget()
-        data = []
-        if len(properties.split("-")) > 1:
-            maxplayers = int(properties.split("-")[1]) # splits up max min amount
-            minplayers = int(properties.split("-")[0])
-            for server in serverlist: # search through every entriy in the database
-                if server[2] >= int(minplayers) and server[2] <= int(maxplayers):
-                    data.append(server)
-        else:
-            for server in serverlist: # search through every entriy in the database
-                if server[2] == int(properties):
-                    data.append(server)
-        return data
-
-    async def getversion(self, properties):
-        """gets servers with a certain version"""
-        serverlist = editdatabase.Databasemanager().onserversget()
-
-        data = []
-        for server in serverlist:
-            if server[1].find(properties) != -1:
-                data.append(server)
-        return data
 
 
     async def embed(self, ctx):

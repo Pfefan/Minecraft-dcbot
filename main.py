@@ -15,11 +15,10 @@ Thread(target=autorun.Autorun().main).start() #starting autorun thread to automa
 async def on_ready():
     """func when the bots has loaded and is online"""
 
-    print('Logged in as: ' + client.user.name)
+    print('Logged in as: ' + client.user.name + ' Ready!')
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening,
                                                            name="-help"),
                                                            status=discord.Status.do_not_disturb)
-    print('Ready!\n')
 
 @client.event
 async def on_reaction_add(reaction, user):
