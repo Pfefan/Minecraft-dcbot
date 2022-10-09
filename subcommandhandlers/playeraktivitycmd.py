@@ -1,18 +1,17 @@
-"""Module imports"""
+"""Module to handel playeractivity recording"""
 import datetime
 import itertools
 import os
 
+import databasemanager
 import discord
 import matplotlib.pyplot as plt
-
-import editdatabase
 
 
 class Main:
     """Manage playeraktivites on servers"""
     def __init__(self):
-        self.dbmanger = editdatabase.Databasemanager()
+        self.dbmanger = databasemanager.Databasemanager()
 
     async def main(self, ctx, cmd=None, message=None):
         """main class to control diffrent commands"""

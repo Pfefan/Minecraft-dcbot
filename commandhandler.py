@@ -1,11 +1,11 @@
 """module imports"""
 from discord.ext import commands
 
-import onlineserverlookup
-import detailscmd
-import listcmd
-import onlinecmd
-import playeraktivitycmd
+import commands.onlineserverlookup as onlineserverlookup
+import subcommandhandlers.detailscmd as detailscmd
+import subcommandhandlers.listcmd as listcmd
+import subcommandhandlers.onlinecmd as onlinecmd
+import subcommandhandlers.playeraktivitycmd as playeraktivitycmd
 import autorun
 
 

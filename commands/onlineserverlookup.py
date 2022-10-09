@@ -2,8 +2,8 @@
 import time
 from threading import Thread
 
-import editdatabase
-import serverlookup
+import databasemanager
+import commands.serverlookup as serverlookup
 
 class Lookup():
     """class to automaticly ping all servers in the database"""
@@ -15,7 +15,7 @@ class Lookup():
         """class to search through the hole database for servers which are online"""
         self.data.clear()
         threadlengh = 10
-        adresses = editdatabase.Databasemanager().all()
+        adresses = databasemanager.Databasemanager().all()
         outadresses = []
         ping_threads = []
 
@@ -25,7 +25,7 @@ class Lookup():
                 time.sleep(0.1)
             outadresses.append(adress)
             if len(outadresses) >= threadlengh:
-                lookup = serverlookup.Ping(threadlengh, outadresses.copy(),
+                lookup = serverlookup.Lookup(threadlengh, outadresses.copy(),
                                            self)
                 pingthread = Thread(target=lookup.main)
                 ping_threads.append(pingthread)
@@ -37,8 +37,8 @@ class Lookup():
             pingthread.join()
 
         await ctx.channel.send(f"found {len(self.data)} servers with players online " +
-                f"out of {editdatabase.Databasemanager().lengh()}")
+                f"out of {databasemanager.Databasemanager().lengh()}")
         print(f"found {len(self.data)} servers with players online " +
-                f"out of {editdatabase.Databasemanager().lengh()}")
+                f"out of {databasemanager.Databasemanager().lengh()}")
 
-        editdatabase.Databasemanager().onserverssave(self.data)
+        databasemanager.Databasemanager().onserverssave(self.data)

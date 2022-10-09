@@ -6,7 +6,7 @@ import urllib
 import discord
 from mcstatus import JavaServer
 
-import databasecmd
+import commands.extra_features as extra_features
 
 
 class Details():
@@ -58,9 +58,9 @@ class Details():
         embed.add_field(name="version", value=status.version.name,
                            inline=False)
         embed.add_field(name=f"Players online ({status.players.online})",
-                           value=databasecmd.CMD().getplayernames(server),
+                           value=extra_features.Features().getplayernames(server),
                            inline=False)
-        embed.add_field(name="Geolocation", value=databasecmd.CMD().geolocation(hostname),
+        embed.add_field(name="Geolocation", value=extra_features.Features().geolocation(hostname),
                            inline=False)
         embed.set_image(url='attachment://details.png')
         if img_data is not None:

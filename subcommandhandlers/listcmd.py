@@ -1,6 +1,6 @@
 """Module imports"""
 import discord
-import editdatabase
+import databasemanager
 
 
 class Listserver():
@@ -18,7 +18,7 @@ class Listserver():
             await self.msg.delete()  #deletes last message
 
         if option == "version":
-            serverlist = editdatabase.Databasemanager().onserversget()
+            serverlist = databasemanager.Databasemanager().onserversget()
 
             for server in serverlist:
                 if server[1].find(properties) != -1:
@@ -30,7 +30,7 @@ class Listserver():
                 self.msg = await ctx.channel.send("no servers were found with the given properties")
 
         elif option == "players":
-            serverlist = editdatabase.Databasemanager().onserversget()
+            serverlist = databasemanager.Databasemanager().onserversget()
             if len(properties.split("-")) > 1:
                 maxplayers = int(properties.split("-")[1]) # splits up max min amount
                 minplayers = int(properties.split("-")[0])

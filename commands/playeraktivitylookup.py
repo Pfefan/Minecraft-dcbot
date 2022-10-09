@@ -3,12 +3,12 @@ import datetime
 
 from mcstatus import JavaServer
 
-import editdatabase
+import databasemanager
 
 
 def main():
     """pings servers an gets amount of players online"""
-    dbmanger = editdatabase.Databasemanager()
+    dbmanger = databasemanager.Databasemanager()
     servers = dbmanger.plyhistoryall()
     delold()
     for i in servers:
@@ -21,13 +21,12 @@ def main():
                     return
                 status = JavaServer.lookup(i).status()
                 dbmanger.plyhistoryinfosave(i, status.players.online)
-            except IOError as error:
-                print(error)
+            except IOError:
                 return
 
 def delold():
     """delete data wich is more than 7 days old"""
-    dbmanger = editdatabase.Databasemanager()
+    dbmanger = databasemanager.Databasemanager()
     timestamp = dbmanger.plyhistorygettime()
     now = datetime.datetime.now()
     for time in timestamp:

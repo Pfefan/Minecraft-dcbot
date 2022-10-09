@@ -1,6 +1,6 @@
 """Module imports"""
 import time
-import playeraktivitylookup
+import commands.playeraktivitylookup as playeraktivitylookup
 
 class Autorun():
     """class to run in another thread in the background to watch servers and to check

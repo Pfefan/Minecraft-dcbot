@@ -5,9 +5,9 @@ import discord
 from discord.ext import commands
 
 import autorun
-import authenticator
+import commandhandler
 
-cogs = [authenticator]
+cogs = [commandhandler]
 
 client = commands.Bot(command_prefix='-')
 Thread(target=autorun.Autorun().main).start() #starting autorun thread to automaticly execute tasks

@@ -1,10 +1,10 @@
-"""Module imports"""
+"""Some features which is used multiple times"""
 import time
 from threading import Thread
 
 import requests
 
-class CMD():
+class Features():
     """functions to execute in the discord bot"""
 
     def __init__(self) -> None:

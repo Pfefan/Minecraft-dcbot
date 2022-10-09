@@ -1,7 +1,7 @@
 """Module import"""
 from mcstatus import JavaServer
 
-class Ping():
+class Lookup():
     """ping minecraft server"""
 
     def __init__(self, _threads, _hostname, cmd) -> None:

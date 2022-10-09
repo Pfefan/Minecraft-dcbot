@@ -1,7 +1,7 @@
 """Module imports"""
 import discord
 
-import editdatabase
+import databasemanager
 
 
 class OnlineCmd:
@@ -13,7 +13,7 @@ class OnlineCmd:
 
     async def showembed(self, ctx, message):
         """shows a embed based on the database"""
-        self.data = editdatabase.Databasemanager().onserversget()
+        self.data = databasemanager.Databasemanager().onserversget()
 
         if message == "reverse":
             self.data.sort(key=lambda x: int(x[2]))
@@ -45,7 +45,7 @@ class OnlineCmd:
         # embed for displaying info
         embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers " +
                                                     "which are online out of " +
-                                                    f"{editdatabase.Databasemanager().lengh()}",
+                                                    f"{databasemanager.Databasemanager().lengh()}",
                                                     color=0x1FFF0F)
         while counter < len(self.data) and pagelengh < 10:
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\
@@ -66,7 +66,7 @@ class OnlineCmd:
 
         embededit = discord.Embed(title="Servers", description=f"found {len(self.data)} servers " +
                                                     "which are online out of " +
-                                                    f"{editdatabase.Databasemanager().lengh()}",
+                                                    f"{databasemanager.Databasemanager().lengh()}",
                                                     color=0x1FFF0F)
         while(counter < len(self.data) and pagelengh < 10):
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\

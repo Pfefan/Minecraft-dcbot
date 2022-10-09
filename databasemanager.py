@@ -1,4 +1,4 @@
-"""module imports"""
+"""Module to interact with database"""
 import sqlalchemy
 from data.createdb import defaultbase, dbbase
 from data.createdb import Onlineserver, Watchserverinfo, Watchserverip, Defaultserver
