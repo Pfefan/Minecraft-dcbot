@@ -1,7 +1,9 @@
 """Module to list specific servers listed by proberties"""
+from msilib.schema import Feature
 import discord
 from discord.ui import Button, View
 import databasemanager
+from commands.extra_features import Features
 
 
 class Listserver():
@@ -9,7 +11,6 @@ class Listserver():
     def __init__(self) -> None:
         self.data = []
         self.page = 0
-        self.msg = ""
 
     async def main(self, interaction, option, properties):
         """search for server with specific properties"""
@@ -26,7 +27,7 @@ class Listserver():
                     self.data.append(server)
 
             if len(self.data) > 0:
-                await self.embed(interaction) # embed for displaying info
+                await self.output(interaction) # embed for displaying info
             else:
                 self.msg = await interaction.response.send_message("no servers were found with the given properties")
 
@@ -44,7 +45,7 @@ class Listserver():
                         self.data.append(server)
 
             if len(self.data) > 0:
-                await self.embed(interaction) # embed for displaying info
+                await self.output(interaction) # embed for displaying info
             else:
                 self.msg = await interaction.response.send_message("no servers were found with the given properties")
 
@@ -52,64 +53,60 @@ class Listserver():
             self.msg = await interaction.response.send_message("unknown option given, options: -version, -players")
 
 
-    async def embed(self, interaction):
+    async def output(self, interaction):
         """embed for list func"""
 
         counter = self.page * 10
-        out = ""
-        lenghcount = 0
-        embed = None
+        tabledata = []
+        maxlimit = 0
 
-        # embed for displaying info
-        embed = discord.Embed(title="Servers", description=f"found {len(self.data)} " +
-                                                            "with specific properties"
-                                                            , color=0xFF0000)
-        while counter < len(self.data) and lenghcount < 10:
-            out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\
-                   f"{self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
+        while counter < len(self.data) and maxlimit < 10:
+            tabledata.append((self.data[counter][0], self.data[counter][1], self.data[counter][2]))
             counter += 1
-            lenghcount += 1
-        embed.add_field(name=f"Page: {self.page + 1}", value=out,
-                           inline=False)
+            maxlimit += 1
 
         previousbtn = Button(label="previous", style=discord.ButtonStyle.gray, emoji="⏮️")
         nextbtn = Button(label="Next", style=discord.ButtonStyle.gray, emoji="⏭️")
 
+        previousbtn.callback = self.previousbtn_callback
+        nextbtn.callback = self.nextbtn_callback
+
         view = View()
         view.add_item(previousbtn)
         view.add_item(nextbtn)
-        await interaction.response.send_message(embed=embed, view=view)
+        
+        await interaction.response.send_message(Features.tablegen(("Hostname", "Version", "players"), tabledata), view=view)
 
 
-    async def updateembed(self):
+    async def onpagechange(self, interaction):
         """class to update embed on reaction"""
-        out = ""
-        lenghcount = 0
         counter = self.page * 10
-
-        embededit = discord.Embed(title="Servers", description=f"found {len(self.data)} " +
-                                                            "with specific properties"
-                                                            , color=0xFF0000)
-        while(counter < len(self.data) and lenghcount < 10):
-            out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\
-                   f"{self.data[counter][1][0:50]} | players: {self.data[counter][2]} \n"
+        tabledata = []
+        maxlimit = 0
+        await self.msg.delete()
+        while counter < len(self.data) and maxlimit < 10:
+            tabledata.append((self.data[counter][0], self.data[counter][1], self.data[counter][2]))
             counter += 1
-            lenghcount += 1
-        embededit.add_field(name=f"Page: {self.page + 1}", value=out,
-                            inline=False)
-        await self.msg.edit(embed=embededit)
-        out = None
+            maxlimit += 1
 
+        previousbtn = Button(label="previous", style=discord.ButtonStyle.gray, emoji="⏮️")
+        nextbtn = Button(label="Next", style=discord.ButtonStyle.gray, emoji="⏭️")
 
-    async def checkreaction(self, reaction, user):
-        """functions to handle reactions"""
-        if str(reaction.emoji) == "⏮️":
-            if self.page != 0:
-                self.page -= 1
-                await self.updateembed()
-                await reaction.message.remove_reaction(reaction.emoji, user)
-        if str(reaction.emoji) == "⏭️":
+        previousbtn.callback = self.previousbtn_callback
+        nextbtn.callback = self.nextbtn_callback
+
+        view = View()
+        view.add_item(previousbtn)
+        view.add_item(nextbtn)
+        
+        await interaction.response.send_message(Features.tablegen(("Hostname", "Version", "players"), tabledata), view=view)
+
+    async def nextbtn_callback(self, interaction):
             if (self.page + 1) * 10 < len(self.data) - 1:
                 self.page += 1
-                await self.updateembed()
-            await reaction.message.remove_reaction(reaction.emoji, user)
+                await self.onpagechange(interaction)
+
+    async def previousbtn_callback(self, interaction):
+        if self.page != 0:
+            self.page -= 1
+            await self.onpagechange(interaction)

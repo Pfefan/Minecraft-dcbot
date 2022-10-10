@@ -3,6 +3,8 @@ import time
 from threading import Thread
 
 import requests
+from prettytable import PrettyTable as pt
+
 
 class Features():
     """functions to execute in the discord bot"""
@@ -68,3 +70,14 @@ class Features():
                 f"ISP: {georesult['isp']} | timezone: {georesult['timezone']}"
         elif str(georesult['status']) == "fail":
             return f"failed to get geolocation of {self.georesult['query']}"
+
+    def tablegen(headers, data):
+        """func to generate tables"""
+        """func to generate tables"""
+
+        tb = pt()
+
+        tb.field_names = headers
+        tb.add_rows(data)
+        
+        return tb
