@@ -27,7 +27,7 @@ class MCservers(commands.Bot):
     async def on_reaction_add(self, reaction, user):
         """func to check for reaction add"""
         if user != self.user:
-            await self.cogs["Commandhandöer"].on_reaction(reaction, user)
+            await self.cogs["Commandhandler"].on_reaction(reaction, user)
 
 bot = MCservers()
 bot.run(open("token.txt", encoding="utf8").readline())

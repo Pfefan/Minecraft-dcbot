@@ -1,5 +1,6 @@
-"""Module imports"""
+"""Module to list specific servers listed by proberties"""
 import discord
+from discord.ui import Button, View
 import databasemanager
 
 
@@ -10,7 +11,7 @@ class Listserver():
         self.page = 0
         self.msg = ""
 
-    async def main(self, ctx, option, properties):
+    async def main(self, interaction, option, properties):
         """search for server with specific properties"""
         self.data.clear()
         self.page = 0
@@ -25,9 +26,9 @@ class Listserver():
                     self.data.append(server)
 
             if len(self.data) > 0:
-                await self.embed(ctx) # embed for displaying info
+                await self.embed(interaction) # embed for displaying info
             else:
-                self.msg = await ctx.channel.send("no servers were found with the given properties")
+                self.msg = await interaction.response.send_message("no servers were found with the given properties")
 
         elif option == "players":
             serverlist = databasemanager.Databasemanager().onserversget()
@@ -43,15 +44,15 @@ class Listserver():
                         self.data.append(server)
 
             if len(self.data) > 0:
-                await self.embed(ctx) # embed for displaying info
+                await self.embed(interaction) # embed for displaying info
             else:
-                self.msg = await ctx.channel.send("no servers were found with the given properties")
+                self.msg = await interaction.response.send_message("no servers were found with the given properties")
 
         else:
-            self.msg = await ctx.channel.send("unknown option given, options: -version, -players")
+            self.msg = await interaction.response.send_message("unknown option given, options: -version, -players")
 
 
-    async def embed(self, ctx):
+    async def embed(self, interaction):
         """embed for list func"""
 
         counter = self.page * 10
@@ -70,10 +71,14 @@ class Listserver():
             lenghcount += 1
         embed.add_field(name=f"Page: {self.page + 1}", value=out,
                            inline=False)
-        self.msg = await ctx.channel.send(embed=embed)
 
-        await self.msg.add_reaction("⏮️")
-        await self.msg.add_reaction("⏭️")
+        previousbtn = Button(label="previous", style=discord.ButtonStyle.gray, emoji="⏮️")
+        nextbtn = Button(label="Next", style=discord.ButtonStyle.gray, emoji="⏭️")
+
+        view = View()
+        view.add_item(previousbtn)
+        view.add_item(nextbtn)
+        await interaction.response.send_message(embed=embed, view=view)
 
 
     async def updateembed(self):

@@ -58,7 +58,7 @@ class Commandhandler(commands.Cog):
 
     @app_commands.command(
         name = "autorunconfig",
-        description = "Change autolookup interval")
+        description = "Change autolookup interval in minutes")
 
     async def autorunconfig(self, interaction: discord.Interaction, repeattime:str):
         """changes autoconfig time in minutes"""
