@@ -14,29 +14,26 @@ class Details():
     def __init__(self) -> None:
         pass
 
-    async def main(self, ctx, message):
+    async def main(self, interaction, server_ip):
         """gets info about a specific server"""
-        debugmsg = await ctx.channel.send("trying to get info about the server")
         try:
-            server = JavaServer.lookup(message)
-            await self.embed(ctx, server, message)
-            await debugmsg.delete()
-            print(f"successfully got details from '{message}'")
+            server = JavaServer.lookup(server_ip)
+            await self.embed(interaction, server, server_ip)
+            print(f"successfully got details from '{server_ip}'")
         except IOError:
             try:
-                if len(message.split(":")) == 2:
-                    await debugmsg.edit(content="server was not reachable")
-                    print(f"failed to get details from {message}")
+                if len(server_ip.split(":")) == 2:
+                    await interaction.response.send_message("server was not reachable")
+                    print(f"failed to get details from {server_ip}")
                     return
-                server = JavaServer.lookup(message + ":25565")
-                await self.embed(ctx, server, message)
-                await debugmsg.delete()
-                print(f"successfully got details from '{message}'")
+                server = JavaServer.lookup(server_ip + ":25565")
+                await self.embed(interaction, server, server_ip)
+                print(f"successfully got details from '{server_ip}'")
             except IOError:
-                await debugmsg.edit(content="server was not reachable")
-                print(f"failed to get details from {message}")
+                await interaction.response.send_message("server was not reachable")
+                print(f"failed to get details from {server_ip}")
 
-    async def embed(self, ctx, server, hostname):
+    async def embed(self, interaction, server, hostname):
         """embed for details command"""
         status = server.status()
         path = "pics/details.png"
@@ -64,6 +61,6 @@ class Details():
                            inline=False)
         embed.set_image(url='attachment://details.png')
         if img_data is not None:
-            await ctx.channel.send(embed=embed, file=file)
+            await interaction.response.send_message(embed=embed, file=file)
         else:
-            await ctx.channel.send(embed=embed)
+            await interaction.response.send_message(embed=embed)

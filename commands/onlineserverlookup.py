@@ -11,7 +11,7 @@ class Lookup():
         self.data = []
         self.threadcounter = 0
 
-    async def onlinecmd(self, ctx):
+    async def onlinecmd(self, interaction):
         """class to search through the hole database for servers which are online"""
         self.data.clear()
         threadlengh = 10
@@ -19,7 +19,7 @@ class Lookup():
         outadresses = []
         ping_threads = []
 
-        await ctx.channel.send("Searching for online servers...")
+        await interaction.response.send_message("Searching for online servers...")
         for adress in adresses:
             while self.threadcounter > 200:
                 time.sleep(0.1)
@@ -36,7 +36,7 @@ class Lookup():
         for pingthread in ping_threads:
             pingthread.join()
 
-        await ctx.channel.send(f"found {len(self.data)} servers with players online " +
+        await interaction.channel.send(f"found {len(self.data)} servers with players online " +
                 f"out of {databasemanager.Databasemanager().lengh()}")
         print(f"found {len(self.data)} servers with players online " +
                 f"out of {databasemanager.Databasemanager().lengh()}")

@@ -1,4 +1,6 @@
 """module imports"""
+import discord
+from discord import app_commands
 from discord.ext import commands
 
 import commands.onlineserverlookup as onlineserverlookup
@@ -9,12 +11,12 @@ import subcommandhandlers.playeraktivitycmd as playeraktivitycmd
 import autorun
 
 
-class DCcmd(commands.Cog):
+class Commandhandler(commands.Cog):
     """discord commands"""
 
-    def __init__(self, client):
+    def __init__(self, bot: commands.Bot):
         """init func"""
-        self.client = client
+        self.bot = bot
         self.onlookup = onlineserverlookup.Lookup()
         self.onlinecmd = onlinecmd.OnlineCmd()
         self.detailscmd = detailscmd.Details()
@@ -22,35 +24,53 @@ class DCcmd(commands.Cog):
         self.autorun = autorun.Autorun()
         self.listcmd = listcmd.Listserver()
 
-    @commands.command()
-    async def online (self, ctx, message=None):
+    @app_commands.command(
+        name = "online",
+        description = "Displays info about online servers")
+
+    async def online (self, interaction: discord.Interaction, listorder:str = None):
         """command to get servers with players online"""
-        await self.onlinecmd.showembed(ctx, message)
+        await self.onlinecmd.showembed(interaction, listorder)
 
-    @commands.command()
-    async def onlinelookup (self, ctx):
+    @app_commands.command(
+        name = "onlinelookup",
+        description = "Checks which servers saved in the database are online")
+
+    async def onlinelookup (self, interaction: discord.Interaction):
         """goes through all servers and checks if they are online"""
-        await self.onlookup.onlinecmd(ctx)
+        await self.onlookup.onlinecmd(interaction)
 
-    @commands.command()
-    async def details(self, ctx, message=None):
+    @app_commands.command(
+        name = "details",
+        description = "Gets details of a specifc server")
+
+    async def details(self, interaction: discord.Interaction, serverip:str):
         """command to get details about a server"""
-        await self.detailscmd.main(ctx, message)
+        await self.detailscmd.main(interaction, serverip)
 
-    @commands.command()
-    async def watch(self, ctx, cmd=None, message=None):
+    @app_commands.command(
+        name = "watch",
+        description = "Logging user count on server")
+
+    async def watch(self, interaction: discord.Interaction, command:str, extra_properties:str = None):
         """playeractivity on a server"""
-        await self.watchserver.main(ctx, cmd, message)
+        await self.watchserver.main(interaction, command, extra_properties)
 
-    @commands.command()
-    async def autorunconfig(self, ctx, repeattime=None):
+    @app_commands.command(
+        name = "autorunconfig",
+        description = "Change autolookup interval")
+
+    async def autorunconfig(self, interaction: discord.Interaction, repeattime:str):
         """changes autoconfig time in minutes"""
-        await self.autorun.changerepeattime(ctx, repeattime)
+        await self.autorun.changerepeattime(interaction, repeattime)
 
-    @commands.command()
-    async def list(self, ctx, message=None, properties=None):
+    @app_commands.command(
+        name = "list",
+        description = "Lists servers with specific properties")
+
+    async def list(self, interaction: discord.Interaction, listmode:str, sortproperties:str):
         """command to List specific servers"""
-        await self.listcmd.main(ctx, message, properties)
+        await self.listcmd.main(interaction, listmode, sortproperties)
 
     async def on_reaction(self, reaction, user):
         """on reaction"""
@@ -59,6 +79,10 @@ class DCcmd(commands.Cog):
         elif str(reaction.emoji) == "⏮️" or str(reaction.emoji) == "⏭️":
             await self.listcmd.checkreaction(reaction, user)
 
-def setup(client):
-    """setup"""
-    client.add_cog(DCcmd(client))
+
+async def setup(bot: commands.Bot) -> None:
+    """Cogs setup func"""
+    await bot.add_cog(
+        Commandhandler(bot),
+        guilds= [discord.Object(id = 644958670353989632)]
+    )

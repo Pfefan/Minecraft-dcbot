@@ -5,28 +5,29 @@ import discord
 from discord.ext import commands
 
 import autorun
-import commandhandler
 
-cogs = [commandhandler]
+class MCservers(commands.Bot):
+    """Discord Bot setup function"""
+    def __init__(self) -> None:
+        super().__init__(command_prefix = "-", intents = discord.Intents.all(), application_id = "941626533079052318")
+        Thread(target=autorun.Autorun().main).start() #starting autorun thread to automaticly execute tasks
 
-client = commands.Bot(command_prefix='-')
-Thread(target=autorun.Autorun().main).start() #starting autorun thread to automaticly execute tasks
-@client.event
-async def on_ready():
-    """func when the bots has loaded and is online"""
+    async def setup_hook(self) -> None:
+        await self.load_extension("commandhandler")
+        await bot.tree.sync(guild = discord.Object(id = 644958670353989632))
 
-    print('Logged in as: ' + client.user.name + ' Ready!')
-    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening,
-                                                           name="-help"),
-                                                           status=discord.Status.do_not_disturb)
+    async def on_ready(self):
+        """func when the bots has loaded and is online"""
 
-@client.event
-async def on_reaction_add(reaction, user):
-    """func to check for reaction add"""
-    if user != client.user:
-        await client.cogs["DCcmd"].on_reaction(reaction, user)
+        print(f'Logged in as: {self.user} Ready!')
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.listening,
+                                                            name="-help"),
+                                                            status=discord.Status.do_not_disturb)
 
-for i, item in enumerate(cogs):
-    cogs[i].setup(client)
+    async def on_reaction_add(self, reaction, user):
+        """func to check for reaction add"""
+        if user != self.user:
+            await self.cogs["Commandhandöer"].on_reaction(reaction, user)
 
-client.run(open("token.txt", encoding="utf8").readline())
+bot = MCservers()
+bot.run(open("token.txt", encoding="utf8").readline())

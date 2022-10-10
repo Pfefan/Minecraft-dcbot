@@ -3,9 +3,9 @@ import datetime
 import itertools
 import os
 
-import databasemanager
 import discord
 import matplotlib.pyplot as plt
+import databasemanager
 
 
 class Main:
@@ -13,44 +13,44 @@ class Main:
     def __init__(self):
         self.dbmanger = databasemanager.Databasemanager()
 
-    async def main(self, ctx, cmd=None, message=None):
+    async def main(self, interaction, cmd=None, proberties=None):
         """main class to control diffrent commands"""
         if cmd == "add":
-            await self.add(ctx, message)
+            await self.add(interaction, proberties)
         elif cmd == "list":
-            await self.listwatchserver(ctx)
+            await self.listwatchserver(interaction)
         elif cmd == "remove":
-            await self.remove(ctx, message)
+            await self.remove(interaction, proberties)
         elif cmd == "info":
-            await self.info(ctx, message)
+            await self.info(interaction, proberties)
         elif cmd == "opttime":
-            await self.opttime(ctx, message)
+            await self.opttime(interaction, proberties)
         else:
-            await ctx.channel.send("unknown command")
+            await interaction.response.send_message("unknown command")
 
-    async def add(self, ctx, message):
+    async def add(self, interaction, server_ip):
         """add a new server to the database which is gona be watched"""
-        self.dbmanger.plyhistoryadd(message)
-        await ctx.channel.send("added server")
+        self.dbmanger.plyhistoryadd(server_ip)
+        await interaction.response.send_message(f"Added {server_ip} to the database")
 
-    async def listwatchserver(self, ctx):
+    async def listwatchserver(self, interaction):
         """list all servers which are being watched"""
         counter = 1
         data = self.dbmanger.plyhistoryall()
         if len(data) == 0:
-            await ctx.channel.send("No servers are being watched")
+            await interaction.response.send_message("No servers are being watched")
         else:
             embed = discord.Embed(title="Watching servers", description="A List " +
                                  "of servers which are watched", color=0xFFFF00)
             for i in data:
                 embed.add_field(name=f"{counter}.", value=i, inline=False)
                 counter += 1
-            await ctx.channel.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
     async def remove(self, ctx, message):
         """remove a server from the database"""
         self.dbmanger.plyhistoryremove(message)
-        await ctx.channel.send("removed server")
+        await ctx.response.send_message("removed server")
 
     async def opttime(self, ctx, message):
         """get optimal time to join a server when the least players are online"""
@@ -78,13 +78,13 @@ class Main:
             avgtime.append(players[1])
         avgplayer = avgplayer / len(mindaydata)
         avgtime=datetime.datetime.strftime(datetime.datetime.fromtimestamp(sum(map(datetime.datetime.timestamp,avgtime))/len(avgtime)),"%H:%M:%S")
-        
+
         embed = discord.Embed(title="Opttime", description="Most inactive server hours",
                               color=0x00fff0)
         embed.add_field(name="average: ", value=f"players:{avgplayer} | time: {avgtime}", inline=False)
         for day in mindaydata:
             embed.add_field(name=f"{day[1].strftime('%d.%m %H:%M')}", value=(day[0]), inline=True)
-        await ctx.channel.send(embed=embed)
+        await ctx.response.send_message(embed=embed)
 
 
     async def info(self, ctx, message):
@@ -113,4 +113,4 @@ class Main:
 
         with open('pics/diagramm.png', 'rb') as file:
             picture = discord.File(file)
-            await ctx.channel.send(file=picture)
+            await ctx.response.send_message(file=picture)

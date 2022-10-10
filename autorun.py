@@ -1,6 +1,6 @@
 """Module imports"""
 import time
-import commands.playeraktivitylookup as playeraktivitylookup
+import commands.activitylookup as activitylookup
 
 class Autorun():
     """class to run in another thread in the background to watch servers and to check
@@ -12,14 +12,14 @@ class Autorun():
         """main class"""
         print("started autolookup")
         while True:
-            playeraktivitylookup.main()
+            activitylookup.main()
             time.sleep(self.repeattime)
 
     async def changerepeattime(self, ctx, _repeattime):
         """function to change repeat time of autolookup"""
-        if _repeattime != None and isinstance(int(_repeattime), int) == True:
+        if _repeattime is not None and isinstance(int(_repeattime), int) is True:
             self.repeattime = int(_repeattime) * 60
-            await ctx.channel.send(f"autolookup intervall successfully changed to {self.repeattime / 60} minutes")
+            await ctx.response.send_message(f"autolookup intervall successfully changed to {self.repeattime / 60} minutes")
         else:
-            await ctx.channel.send("invalid option")
+            await ctx.response.send_message("invalid option")
         print(f"changed repeattime to {self.repeattime} seconds")

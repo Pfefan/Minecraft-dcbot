@@ -11,13 +11,13 @@ class OnlineCmd:
         self.page = 0 # page of the embed
         self.msg = ""   # message of the embed, so it can be edited
 
-    async def showembed(self, ctx, message):
+    async def showembed(self, ctx, listorder):
         """shows a embed based on the database"""
         self.data = databasemanager.Databasemanager().onserversget()
 
-        if message == "reverse":
+        if listorder == "reverse":
             self.data.sort(key=lambda x: int(x[2]))
-        elif message is None:
+        elif listorder is None:
             self.data.sort(key=lambda x: int(x[2]), reverse=True)
 
         await self.onembed(ctx)
@@ -35,7 +35,7 @@ class OnlineCmd:
                 await self.updatoneembed()
             await reaction.message.remove_reaction(reaction.emoji, user)
 
-    async def onembed(self, ctx):
+    async def onembed(self, interaction):
         """func to show embed"""
         self.page = 0
         counter = self.page * 10
@@ -54,7 +54,7 @@ class OnlineCmd:
             pagelengh += 1
         embed.add_field(name=f"Page: {self.page + 1}", value=out,
                            inline=False)
-        self.msg = await ctx.channel.send(embed=embed)
+        self.msg = await interaction.response.send_message(embed=embed)
         await self.msg.add_reaction("⬅️")
         await self.msg.add_reaction("➡️")
 
