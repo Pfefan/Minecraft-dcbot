@@ -1,7 +1,7 @@
 """Module to interact with database"""
 import sqlalchemy
-from data.createdb import defaultbase, dbbase
-from data.createdb import Onlineserver, Watchserverinfo, Watchserverip, Defaultserver
+from data.db_preset import defaultbase, dbbase
+from data.db_preset import Onlineserver, Watchserverinfo, Watchserverip, Defaultserver
 
 class Databasemanager():
     """Databasemanage"""
@@ -18,17 +18,17 @@ class Databasemanager():
         self.session_database = sqlalchemy.orm.sessionmaker()
         self.session_database.configure(bind=db_database)
 
-    def get(self, primary_key):
+    def dafault_getbyid(self, primary_key):
         """returns a specific id out of the database"""
         with self.session_servers() as session:
             return session.query(Defaultserver).get(primary_key).server_hostname
 
-    def lengh(self):
+    def default_lengh(self):
         """returns the lengh of the database"""
         with self.session_servers() as session:
             return session.query(Defaultserver).count()
 
-    def all(self):
+    def default_getall(self):
         """returns all hostnames entries of the database"""
         hostnames = []
         with self.session_servers() as session:
@@ -37,7 +37,7 @@ class Databasemanager():
                 hostnames.append(i.server_hostname)
             return hostnames
 
-    def onserverssave(self, data):
+    def on_savedata(self, data):
         """saves online servers to a history database
          and then it adds the new entries to the online database"""
         with self.session_database() as session:
@@ -50,7 +50,7 @@ class Databasemanager():
                 session.add(onserverdb)
             session.commit()
 
-    def onserversget(self):
+    def on_getall(self):
         """returns all entries of database """
         serverinfo = []
         with self.session_database() as session:
@@ -59,14 +59,14 @@ class Databasemanager():
                 serverinfo.append((i.hostname, i.version, i.onplayer, i.timestamp))
             return serverinfo
 
-    def plyhistoryadd(self, data):
+    def watch_additem(self, data):
         """saves a new History entry into database"""
         with self.session_database() as session:
             entry = Watchserverip(id=data)
             session.add(entry)
             session.commit()
 
-    def plyhistoryall(self):
+    def watch_getall(self):
         """returns all entries saved in database"""
         entries = []
         with self.session_database() as session:
@@ -75,7 +75,7 @@ class Databasemanager():
                 entries.append(i.id)
             return entries
 
-    def plyhistoryremove(self, data):
+    def watch_removebyid(self, data):
         """removes a specific entry from database"""
         with self.session_database() as session:
             session.query(Watchserverip).filter(Watchserverip.id == data).delete()
@@ -83,14 +83,14 @@ class Databasemanager():
             session.commit()
 
 
-    def plyhistoryinfosave(self, _hostname, _players):
+    def watch_savedataitem(self, _hostname, _players):
         """saves info for a certain server"""
         with self.session_database() as session:
             entry = Watchserverinfo(hostname = _hostname, onplayer=_players)
             session.add(entry)
             session.commit()
 
-    def plyhistoryinfoget(self, _hostname):
+    def watch_getdata(self, _hostname):
         """returns info for a certain server"""
         entries = []
         with self.session_database() as session:
@@ -100,7 +100,7 @@ class Databasemanager():
                 entries.append((i.onplayer, i.hostname, i.timestamp))
         return entries
 
-    def plyhistorygettime(self):
+    def watch_gettimestamps(self):
         """returns all entries with timestamp"""
         entries = []
         with self.session_database() as session:
@@ -109,7 +109,7 @@ class Databasemanager():
                 entries.append((i.id, i.timestamp))
         return entries
 
-    def plyhistoryautodel(self, data):
+    def watch_autodel(self, data):
         """deletes to old entries"""
         with self.session_database() as session:
             session.query(Watchserverinfo).filter(Watchserverinfo.id == data).delete()

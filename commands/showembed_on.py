@@ -1,19 +1,19 @@
-"""Module imports"""
+"""Prints out a embed with data about servers with buttons to switch between sites"""
 import discord
 
 import databasemanager
 
 
-class OnlineCmd:
+class OnEmbed:
     """class to show all server stats for all entries in database"""
     def __init__(self) -> None:
         self.data = [] # list of servers
         self.page = 0 # page of the embed
         self.msg = ""   # message of the embed, so it can be edited
 
-    async def showembed(self, ctx, listorder):
-        """shows a embed based on the database"""
-        self.data = databasemanager.Databasemanager().onserversget()
+    async def sortdata(self, ctx, listorder):
+        """Sorts data"""
+        self.data = databasemanager.Databasemanager().on_getall()
 
         if listorder == "reverse":
             self.data.sort(key=lambda x: int(x[2]))
@@ -22,21 +22,8 @@ class OnlineCmd:
 
         await self.onembed(ctx)
 
-    async def checkreaction(self, reaction, user):
-        """functions to handle reactions"""
-        if str(reaction.emoji) == "⬅️":
-            if self.page != 0:
-                self.page -= 1
-                await self.updatoneembed()
-                await reaction.message.remove_reaction(reaction.emoji, user)
-        if str(reaction.emoji) == "➡️":
-            if (self.page + 1) * 10 < len(self.data) - 1:
-                self.page += 1
-                await self.updatoneembed()
-            await reaction.message.remove_reaction(reaction.emoji, user)
-
     async def onembed(self, interaction):
-        """func to show embed"""
+        """Shows data in embed form"""
         self.page = 0
         counter = self.page * 10
         out = ""
@@ -45,7 +32,7 @@ class OnlineCmd:
         # embed for displaying info
         embed = discord.Embed(title="Servers", description=f"found {len(self.data)} servers " +
                                                     "which are online out of " +
-                                                    f"{databasemanager.Databasemanager().lengh()}",
+                                                    f"{databasemanager.Databasemanager().default_lengh()}",
                                                     color=0x1FFF0F)
         while counter < len(self.data) and pagelengh < 10:
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\
@@ -55,8 +42,6 @@ class OnlineCmd:
         embed.add_field(name=f"Page: {self.page + 1}", value=out,
                            inline=False)
         self.msg = await interaction.response.send_message(embed=embed)
-        await self.msg.add_reaction("⬅️")
-        await self.msg.add_reaction("➡️")
 
     async def updatoneembed(self):
         """class to update embed on reaction"""
@@ -66,7 +51,7 @@ class OnlineCmd:
 
         embededit = discord.Embed(title="Servers", description=f"found {len(self.data)} servers " +
                                                     "which are online out of " +
-                                                    f"{databasemanager.Databasemanager().lengh()}",
+                                                    f"{databasemanager.Databasemanager().default_lengh()}",
                                                     color=0x1FFF0F)
         while(counter < len(self.data) and pagelengh < 10):
             out += f"{counter + 1}. IP: {self.data[counter][0]} | version: " +\

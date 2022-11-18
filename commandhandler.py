@@ -1,12 +1,13 @@
-"""module imports"""
+"""Main command handler to handel slash commands"""
 import discord
 from discord import app_commands
 from discord.ext import commands
+from threading import Thread
 
-import commands.onlineserverlookup as onlineserverlookup
-import subcommandhandlers.detailscmd as detailscmd
-import subcommandhandlers.listcmd as listcmd
-import subcommandhandlers.onlinecmd as onlinecmd
+import commands.serverlookup_on as serverlookup_on
+import commands.details as details
+import commands.showembed_on as showembed_on
+import subcommandhandlers.list_on as liston
 import subcommandhandlers.playeraktivitycmd as playeraktivitycmd
 import autorun
 
@@ -17,12 +18,12 @@ class Commandhandler(commands.Cog):
     def __init__(self, bot: commands.Bot):
         """init func"""
         self.bot = bot
-        self.onlookup = onlineserverlookup.Lookup()
-        self.onlinecmd = onlinecmd.OnlineCmd()
-        self.detailscmd = detailscmd.Details()
+        self.onlookup = serverlookup_on.Lookup()
+        self.onlinecmd = showembed_on.OnEmbed()
+        self.detailscmd = details.Details()
         self.watchserver = playeraktivitycmd.Main()
         self.autorun = autorun.Autorun()
-        self.listcmd = listcmd.Listserver()
+        self.listcmd = liston.Listserver()
 
     @app_commands.command(
         name = "online",
@@ -30,7 +31,7 @@ class Commandhandler(commands.Cog):
 
     async def online (self, interaction: discord.Interaction, listorder:str = None):
         """command to get servers with players online"""
-        await self.onlinecmd.showembed(interaction, listorder)
+        await self.onlinecmd.sortdata(interaction, listorder)
 
     @app_commands.command(
         name = "onlinelookup",
@@ -38,7 +39,8 @@ class Commandhandler(commands.Cog):
 
     async def onlinelookup (self, interaction: discord.Interaction):
         """goes through all servers and checks if they are online"""
-        await self.onlookup.onlinecmd(interaction)
+        await interaction.response.send_message("Searching for online servers...")
+        Thread(target=self.onlookup.serverlookup).start()
 
     @app_commands.command(
         name = "details",

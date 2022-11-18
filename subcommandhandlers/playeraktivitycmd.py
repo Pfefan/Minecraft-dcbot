@@ -1,4 +1,4 @@
-"""Module to handel playeractivity recording"""
+"""Module to handel command inputs from user to redirect to functions"""
 import datetime
 import itertools
 import os
@@ -12,31 +12,39 @@ class Main:
     """Manage playeraktivites on servers"""
     def __init__(self):
         self.dbmanger = databasemanager.Databasemanager()
+        self.cmdlist = ["add", "remove", "watched", "data", "lowest-activity", "help"]
 
     async def main(self, interaction, cmd=None, proberties=None):
         """main class to control diffrent commands"""
-        if cmd == "add":
-            await self.add(interaction, proberties)
-        elif cmd == "list":
-            await self.listwatchserver(interaction)
-        elif cmd == "remove":
-            await self.remove(interaction, proberties)
-        elif cmd == "info":
+        if cmd == self.cmdlist[0]:
+            await self.add_watchserver(interaction, proberties)
+        elif cmd == self.cmdlist[1]:
+            await self.remove_watchedserver(interaction, proberties)
+        elif cmd == self.cmdlist[2]:
+            await self.list_watchedservers(interaction)
+        elif cmd == self.cmdlist[3]:
             await self.info(interaction, proberties)
-        elif cmd == "opttime":
-            await self.opttime(interaction, proberties)
+        elif cmd == self.cmdlist[4]:
+            await self.low_activity(interaction, proberties)
+        elif cmd == self.cmdlist[5]:
+            await interaction.response.send_message(f"available commands are: {', '.join(self.cmdlist)}")
         else:
             await interaction.response.send_message("unknown command")
 
-    async def add(self, interaction, server_ip):
+    async def add_watchserver(self, interaction, server_ip):
         """add a new server to the database which is gona be watched"""
-        self.dbmanger.plyhistoryadd(server_ip)
+        self.dbmanger.watch_additem(server_ip)
         await interaction.response.send_message(f"Added {server_ip} to the database")
 
-    async def listwatchserver(self, interaction):
+    async def remove_watchedserver(self, ctx, message):
+        """Removes a watched server from the database"""
+        self.dbmanger.watch_removebyid(message)
+        await ctx.response.send_message("removed server")
+
+    async def list_watchedservers(self, interaction):
         """list all servers which are being watched"""
         counter = 1
-        data = self.dbmanger.plyhistoryall()
+        data = self.dbmanger.watch_getall()
         if len(data) == 0:
             await interaction.response.send_message("No servers are being watched")
         else:
@@ -47,14 +55,36 @@ class Main:
                 counter += 1
             await interaction.response.send_message(embed=embed)
 
-    async def remove(self, ctx, message):
-        """remove a server from the database"""
-        self.dbmanger.plyhistoryremove(message)
-        await ctx.response.send_message("removed server")
+    async def info(self, ctx, message):
+        """return info of a selected server"""
+        data = self.dbmanger.watch_getdata(message)
+        playerdata = []
+        datetimedata = []
 
-    async def opttime(self, ctx, message):
-        """get optimal time to join a server when the least players are online"""
-        data = self.dbmanger.plyhistoryinfoget(message)
+        for i in data:
+            playerdata.append(i[0])
+            datetimedata.append(i[2])
+
+        fig, axis = plt.subplots(figsize=(16, 9))
+        axis.plot(datetimedata, playerdata)
+
+        axis.set(xlabel='datetime m-d H:M', ylabel='players',
+            title=f'player data of {message}')
+        axis.grid()
+
+        direxist = os.path.exists("pics/")
+        if not direxist:
+            os.makedirs("pics/")
+
+        fig.savefig("pics/diagramm.png")
+
+        with open('pics/diagramm.png', 'rb') as file:
+            picture = discord.File(file)
+            await ctx.response.send_message(file=picture)
+
+    async def low_activity(self, ctx, message):
+        """Gets lowest player activity of each day and the average off all the data"""
+        data = self.dbmanger.watch_getdata(message)
         counter = 0
         minplayers = 9999999999999
         mintimestamp = ""
@@ -85,32 +115,3 @@ class Main:
         for day in mindaydata:
             embed.add_field(name=f"{day[1].strftime('%d.%m %H:%M')}", value=(day[0]), inline=True)
         await ctx.response.send_message(embed=embed)
-
-
-    async def info(self, ctx, message):
-        """return info of a selected server"""
-        data = self.dbmanger.plyhistoryinfoget(message)
-        playerdata = []
-        datetimedata = []
-
-        for i in data:
-            playerdata.append(i[0])
-            datetimedata.append(i[2])
-
-        fig, axis = plt.subplots(figsize=(16, 9))
-        # plt.tight_layout()
-        axis.plot(datetimedata, playerdata)
-
-        axis.set(xlabel='datetime m-d H:M', ylabel='players',
-            title=f'player data of {message}')
-        axis.grid()
-
-        direxist = os.path.exists("pics/")
-        if not direxist:
-            os.makedirs("pics/")
-
-        fig.savefig("pics/diagramm.png")
-
-        with open('pics/diagramm.png', 'rb') as file:
-            picture = discord.File(file)
-            await ctx.response.send_message(file=picture)

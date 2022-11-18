@@ -1,4 +1,4 @@
-"""Module to list specific servers listed by proberties"""
+"""Module to list specific servers listed by properties"""
 import discord
 from discord.ui import Button, View
 import databasemanager
@@ -15,11 +15,9 @@ class Listserver():
         """search for server with specific properties"""
         self.data.clear()
         self.page = 0
-        if self.msg != None and self.msg != "":
-            await self.msg.delete()  #deletes last message
 
         if option == "version":
-            serverlist = databasemanager.Databasemanager().onserversget()
+            serverlist = databasemanager.Databasemanager().on_getall()
 
             for server in serverlist:
                 if server[1].find(properties) != -1:
@@ -31,7 +29,7 @@ class Listserver():
                 self.msg = await interaction.response.send_message("no servers were found with the given properties")
 
         elif option == "players":
-            serverlist = databasemanager.Databasemanager().onserversget()
+            serverlist = databasemanager.Databasemanager().on_getall()
             if len(properties.split("-")) > 1:
                 maxplayers = int(properties.split("-")[1]) # splits up max min amount
                 minplayers = int(properties.split("-")[0])

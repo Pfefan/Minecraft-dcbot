@@ -37,12 +37,12 @@ class Features():
                 return f"server modified responce: {self.players[0]}"
             while len(self.players) < online:
                 status = server.status()
-                Thread(target=self.playersearch(status)).start()
+                Thread(target=self.playersamples(status)).start()
                 while self.threadcounter > 200:
                     time.sleep(0.1)
         return self.players
 
-    def playersearch(self, status):
+    def playersamples(self, status):
         """Loops through all players currently online in the server"""
         self.threadcounter += 1
         for i in status.players.sample:
@@ -55,11 +55,11 @@ class Features():
         """gets the geolocation of the server"""
 
         request_url = 'http://ip-api.com/json/' + ipaddress
-        response = requests.get(request_url).json()
+        response = requests.get(request_url, timeout=10).json()
 
         if response['status'] == 'fail' and len(ipaddress.split(":")) > 1:
             request_url = 'http://ip-api.com/json/' + ipaddress.split(":")[0]
-            response = requests.get(request_url).json()
+            response = requests.get(request_url, timeout=10).json()
 
         georesult = response
 
@@ -71,13 +71,9 @@ class Features():
         elif str(georesult['status']) == "fail":
             return f"failed to get geolocation of {self.georesult['query']}"
 
-    def tablegen(headers, data):
+    def tablegen(self, headers, data):
         """func to generate tables"""
-        """func to generate tables"""
-
         tb = pt()
-
         tb.field_names = headers
-        tb.add_rows(data)
-        
+        tb.add_rows(data)  
         return tb

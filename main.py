@@ -1,8 +1,8 @@
-"""module import"""
+"""Main class to initialize the programm"""
 from threading import Thread
 
-import discord
 import os
+import discord
 from discord.ext import commands
 
 import autorun

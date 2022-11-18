@@ -1,9 +1,9 @@
-"""Module impots"""
+"""Checks for online servers"""
 import time
 from threading import Thread
 
+import commands.checkserver_status as checkserver_status
 import databasemanager
-import commands.serverlookup as serverlookup
 
 class Lookup():
     """class to automaticly ping all servers in the database"""
@@ -11,21 +11,21 @@ class Lookup():
         self.data = []
         self.threadcounter = 0
 
-    async def onlinecmd(self, interaction):
-        """class to search through the hole database for servers which are online"""
+    async def serverlookup(self):
+        """Goes through server entries in database and check if the respond,
+         if so it will save there data into a database"""
         self.data.clear()
         threadlengh = 10
-        adresses = databasemanager.Databasemanager().all()
+        adresses = databasemanager.Databasemanager().default_getall()
         outadresses = []
         ping_threads = []
 
-        await interaction.response.send_message("Searching for online servers...")
         for adress in adresses:
             while self.threadcounter > 200:
                 time.sleep(0.1)
             outadresses.append(adress)
             if len(outadresses) >= threadlengh:
-                lookup = serverlookup.Lookup(threadlengh, outadresses.copy(),
+                lookup = checkserver_status.Lookup(threadlengh, outadresses.copy(),
                                            self)
                 pingthread = Thread(target=lookup.main)
                 ping_threads.append(pingthread)
@@ -36,9 +36,7 @@ class Lookup():
         for pingthread in ping_threads:
             pingthread.join()
 
-        await interaction.channel.send(f"found {len(self.data)} servers with players online " +
-                f"out of {databasemanager.Databasemanager().lengh()}")
         print(f"found {len(self.data)} servers with players online " +
-                f"out of {databasemanager.Databasemanager().lengh()}")
+                f"out of {databasemanager.Databasemanager().default_lengh()}")
 
-        databasemanager.Databasemanager().onserverssave(self.data)
+        databasemanager.Databasemanager().on_savedata(self.data)
