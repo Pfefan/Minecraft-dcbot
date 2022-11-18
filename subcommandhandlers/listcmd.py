@@ -1,5 +1,4 @@
 """Module to list specific servers listed by proberties"""
-from msilib.schema import Feature
 import discord
 from discord.ui import Button, View
 import databasemanager

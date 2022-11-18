@@ -72,14 +72,6 @@ class Commandhandler(commands.Cog):
         """command to List specific servers"""
         await self.listcmd.main(interaction, listmode, sortproperties)
 
-    async def on_reaction(self, reaction, user):
-        """on reaction"""
-        if str(reaction.emoji) == "⬅️" or str(reaction.emoji) == "➡️":
-            await self.onlinecmd.checkreaction(reaction, user)
-        elif str(reaction.emoji) == "⏮️" or str(reaction.emoji) == "⏭️":
-            await self.listcmd.checkreaction(reaction, user)
-
-
 async def setup(bot: commands.Bot) -> None:
     """Cogs setup func"""
     await bot.add_cog(
