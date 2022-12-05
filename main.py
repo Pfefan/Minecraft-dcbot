@@ -36,10 +36,10 @@ def configmanager():
     to enter token if not in config"""
     if not os.path.isfile("config.conf"):
         with open("config.conf", "w+", encoding="utf8") as conf:
-            conf.write("autorunrepeat=600\nthreadlimit=200\ntoken=")
+            conf.write("autorunrepeat=600\nthreadlimit=250\ntoken=")
     else:
-        with open("config.conf", encoding="utf8") as tk:
-            for i, line in enumerate(tk):
+        with open("config.conf", encoding="utf8") as conf:
+            for i, line in enumerate(conf):
                 if line.strip().split("=")[1] == "":
                     print(f"invalid config on {line}")
                     break

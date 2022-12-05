@@ -1,31 +1,26 @@
 """Module import"""
 from mcstatus import JavaServer
+import dns.resolver
 
-class Lookup():
+class Statuscheck():
     """ping minecraft server"""
 
-    def __init__(self, _threads, _hostname, lk_self) -> None:
-        self.threads = _threads
-        self.hostname = _hostname
-        self.lookup_self = lk_self
+    def __init__(self) -> None:
+        pass
 
-    def main(self):
+    def getstatus(self, address):
         """pings servers and checks if there are any players on the server"""
-        counter = 0
-        port = "25565"
-        while counter < self.threads:
-            if len(self.hostname[counter].split(":")) < 2:
-                port = ":25565"
+        ipsplit = address.split(":")
+        try:
+            if len(ipsplit) != 2:
+                server = JavaServer.lookup(address + "25565", timeout=2)
             else:
-                port = ""
-            try:
-                server = JavaServer.lookup(self.hostname[counter] +
-                                                port)
-                status = server.status()
-                self.lookup_self.data.append((self.hostname[counter], status.version.name,
-                                        status.players.online))
-            except IOError:
-                pass
-            counter += 1
-
-        self.lookup_self.threadcounter -= 1
+                server = JavaServer.lookup(address, timeout=2)
+            status = server.status()
+            return ((address, status.version.name, status.players.online))
+        except IOError:
+            return False
+        except dns.resolver.LifetimeTimeout:
+            return False
+        except dns.resolver.NoNameservers:
+            return False

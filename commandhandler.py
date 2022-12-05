@@ -2,14 +2,13 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-from threading import Thread
 
-import commands.serverlookup_on as serverlookup_on
+import autorun
 import commands.details as details
+import commands.serverlookup_on as serverlookup_on
 import commands.showembed_on as showembed_on
 import subcommandhandlers.list_on as liston
 import subcommandhandlers.playeraktivitycmd as playeraktivitycmd
-import autorun
 
 
 class Commandhandler(commands.Cog):
@@ -35,12 +34,12 @@ class Commandhandler(commands.Cog):
 
     @app_commands.command(
         name = "onlinelookup",
-        description = "Checks which servers saved in the database are online")
+        description = "Checks status of stored Servers in database")
 
     async def onlinelookup (self, interaction: discord.Interaction):
         """goes through all servers and checks if they are online"""
-        await interaction.response.send_message("Searching for online servers...")
-        Thread(target=self.onlookup.serverlookup).start()
+        await interaction.response.send_message("Looking for online Servers! Will take about 10 minutes")
+        await self.onlookup.serverlookup(interaction)
 
     @app_commands.command(
         name = "details",
