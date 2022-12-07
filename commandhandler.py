@@ -38,7 +38,7 @@ class Commandhandler(commands.Cog):
 
     async def onlinelookup (self, interaction: discord.Interaction):
         """goes through all servers and checks if they are online"""
-        await interaction.response.send_message("Looking for online Servers! Will take about 10 minutes")
+        await interaction.response.send_message(content="Looking for online Servers! Will take about 10 minutes")
         await self.onlookup.serverlookup(interaction)
 
     @app_commands.command(

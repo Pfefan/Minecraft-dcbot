@@ -15,7 +15,7 @@ class Statuscheck():
             if len(ipsplit) != 2:
                 server = JavaServer.lookup(address + "25565", timeout=2)
             else:
-                server = JavaServer.lookup(address, timeout=2)
+                server = JavaServer.lookup(address, timeout=5)
             status = server.status()
             return ((address, status.version.name, status.players.online))
         except IOError:

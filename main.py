@@ -32,8 +32,8 @@ class MCservers(commands.Bot):
 bot = MCservers()
 
 def configmanager():
-    """creates config if non existitent with default properties, starts bot with token requires user 
-    to enter token if not in config"""
+    """creates config if non existitent with default properties, starts bot with token requires user
+     to enter token if not in config"""
     if not os.path.isfile("config.conf"):
         with open("config.conf", "w+", encoding="utf8") as conf:
             conf.write("autorunrepeat=600\nthreadlimit=250\ntoken=")

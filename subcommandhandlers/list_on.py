@@ -2,7 +2,7 @@
 import discord
 from discord.ui import Button, View
 import databasemanager
-from commands.extra_features import Features
+from commands.extra_features import PlayerNameService
 
 
 class Listserver():
@@ -72,7 +72,7 @@ class Listserver():
         view.add_item(previousbtn)
         view.add_item(nextbtn)
         
-        await interaction.response.send_message(Features.tablegen(("Hostname", "Version", "players"), tabledata), view=view)
+        #await interaction.response.send_message(PlayerNameService.tablegen(("Hostname", "Version", "players"), tabledata), view=view)
 
 
     async def onpagechange(self, interaction):
@@ -96,7 +96,7 @@ class Listserver():
         view.add_item(previousbtn)
         view.add_item(nextbtn)
         
-        await interaction.response.send_message(Features.tablegen(("Hostname", "Version", "players"), tabledata), view=view)
+        #await interaction.response.send_message(PlayerNameService.tablegen(("Hostname", "Version", "players"), tabledata), view=view)
 
     async def nextbtn_callback(self, interaction):
             if (self.page + 1) * 10 < len(self.data) - 1:
