@@ -1,5 +1,5 @@
 """Some features which is used multiple times"""
-import asyncio
+import logging
 import time
 from threading import Thread
 
@@ -77,8 +77,8 @@ class GeolocationService:
                 "flag": ":flag_" +  response["countryCode"].lower() + ":",
                 "state": response["regionName"],
                 "city": response["city"],
-                "ipv4": response["query"],
-                "isp": response["isp"],
+                "IPV4": response["query"],
+                "ISP": response["isp"],
                 "timezone": response["timezone"],
             }
             return data
@@ -101,3 +101,27 @@ class GeolocationService:
                 "status": "failed",
                 "message": f"Failed to get response from {request_url}"
             }
+
+
+class CustomFormatter(logging.Formatter):
+    """formats logging text"""
+    grey = "\x1b[38;20m"
+    yellow = "\x1b[33;20m"
+    red = "\x1b[31;20m"
+    bold_red = "\x1b[31;1m"
+    reset = "\x1b[0m"
+    format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
+
+    FORMATS = {
+        logging.DEBUG: grey + format + reset,
+        logging.INFO: grey + format + reset,
+        logging.WARNING: yellow + format + reset,
+        logging.ERROR: red + format + reset,
+        logging.CRITICAL: bold_red + format + reset
+    }
+
+    def formater(self, record):
+        """return func"""
+        log_fmt = self.FORMATS.get(record.levelno)
+        formatter = logging.Formatter(log_fmt)
+        return formatter.format(record)

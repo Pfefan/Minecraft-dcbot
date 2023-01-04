@@ -1,12 +1,13 @@
 """Module imports"""
 
+import json
 import os
 import urllib
 
 import discord
 from mcstatus import JavaServer
 
-import commands.extra_features as extra_features
+from commands.extra_features import GeolocationService, PlayerNameService
 
 
 class Details():
@@ -35,10 +36,12 @@ class Details():
 
     async def embed(self, interaction, server, hostname):
         """embed for details command"""
+        # gets the favicon of the minecraft server
         status = server.status()
         path = "pics/details.png"
         # gets the favicon of the minecraft server
         img_data = status.favicon
+
         if img_data is not None:
             response = urllib.request.urlopen(img_data)
             os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -47,18 +50,14 @@ class Details():
                 file = discord.File('pics/details.png', filename="details.png")
 
         # embed for displaying infos
-        embed = discord.Embed(title="Details about a Server", description="motd: " +
-                                 status.description, color=0xFFA500)
+        embed = discord.Embed(title="Details about a Server", description=f"motd: {status.description}", color=0xFFA500)
         embed.add_field(name="ip", value=hostname, inline=True)
-        embed.add_field(name="Latency in ms", value=status.latency,
-                    inline=True)
-        embed.add_field(name="version", value=status.version.name,
-                           inline=False)
+        embed.add_field(name="Latency in ms", value=status.latency, inline=True)
+        embed.add_field(name="version", value=status.version.name, inline=False)
         embed.add_field(name=f"Players online ({status.players.online})",
-                           value=extra_features.Features().getplayernames(server),
-                           inline=False)
-        embed.add_field(name="Geolocation", value=extra_features.Features().geolocation(hostname),
-                           inline=False)
+                        value=", ".join(PlayerNameService().getplayernames(server)),
+                        inline=False)
+        embed.add_field(name="Geolocation", value=json.dumps(GeolocationService().geolocation(hostname)).replace('"', '').replace('{', '').replace('}', ''), inline=False)
         embed.set_image(url='attachment://details.png')
         if img_data is not None:
             await interaction.response.send_message(embed=embed, file=file)

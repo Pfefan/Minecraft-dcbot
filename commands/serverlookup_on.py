@@ -14,22 +14,28 @@ class Lookup():
         """Goes through server entries in database and check if the respond,
          if so it will save there data into a database"""
         ipdata = databasemanager.Databasemanager().default_getall()
+        datalen = len(ipdata)
         lookup = checkserver_status.Statuscheck()
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=250) as executor:
-            # Submit the data to be processed in multiple threads
-            results = [executor.submit(lookup.getstatus, ipdata) for ipdata in ipdata]
+            # Use the map method to apply the lookup.getstatus function to each element of the ipdata sequence
+            results = executor.map(lookup.getstatus, ipdata)
 
+            progresscounter = 0
             # Iterate over the results and get the processed data
-            for future in concurrent.futures.as_completed(results):
-                if future.result() is not False:
-                    self.data.append(future.result())
-        print(self.data)
+            for result in results:
+                if result is not False:
+                    self.data.append(result)
+                    await interaction.edit_original_response(content="Looking for online Servers"+
+                                                            f"! {progresscounter} out of "+
+                                                            f"{datalen}, {len(self.data)} "+
+                                                            "responded")
+                progresscounter += 1
 
         print(f"found {len(self.data)} servers with players online " +
                 f"out of {databasemanager.Databasemanager().default_lengh()}")
-        """await ctx.send(f"found {len(self.data)} servers with players " +
-                f"online out of {databasemanager.Databasemanager().default_lengh()}")"""
+        await interaction.edit_original_response(content=f"found {len(self.data)} servers with players " +
+                f"online out of {datalen}")
 
-        databasemanager.Databasemanager().on_savedata(self.data) 
+        databasemanager.Databasemanager().on_savedata(self.data)
         self.data.clear()

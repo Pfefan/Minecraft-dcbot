@@ -54,8 +54,8 @@ def test_geolocation():
     assert geolocation["flag"] == ":flag_us:"
     assert geolocation["state"] == "Virginia"
     assert geolocation["city"] == "Ashburn"
-    assert geolocation["ipv4"] == ip_address
-    assert geolocation["isp"] == "Google LLC"
+    assert geolocation["IPV4"] == ip_address
+    assert geolocation["ISP"] == "Google LLC"
     assert geolocation["timezone"] == "America/New_York"
 
     ip_address = "invalid"

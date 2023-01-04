@@ -25,16 +25,24 @@ class Commandhandler(commands.Cog):
         self.listcmd = liston.Listserver()
 
     @app_commands.command(
-        name = "online",
-        description = "Displays info about online servers")
+        name = "filter-servers",
+        description = "Filter servers for specific properties")
+
+    async def list(self, interaction: discord.Interaction, listmode:str, sortproperties:str):
+        """command to List specific servers"""
+        await self.listcmd.main(interaction, listmode, sortproperties)
+
+    @app_commands.command(
+        name = "list-servers",
+        description = "Lists server which are online, data from: check-server-status")
 
     async def online (self, interaction: discord.Interaction, listorder:str = None):
         """command to get servers with players online"""
         await self.onlinecmd.sortdata(interaction, listorder)
 
     @app_commands.command(
-        name = "onlinelookup",
-        description = "Checks status of stored Servers in database")
+        name = "check-server-status",
+        description = "Checks the status of servers stored in a database")
 
     async def onlinelookup (self, interaction: discord.Interaction):
         """goes through all servers and checks if they are online"""
@@ -50,8 +58,8 @@ class Commandhandler(commands.Cog):
         await self.detailscmd.main(interaction, serverip)
 
     @app_commands.command(
-        name = "watch",
-        description = "Logging user count on server")
+        name = "playeractivity",
+        description = "Logs and Displays playerdata of servers")
 
     async def watch(self, interaction: discord.Interaction, command:str, extra_properties:str = None):
         """playeractivity on a server"""
@@ -64,14 +72,6 @@ class Commandhandler(commands.Cog):
     async def autorunconfig(self, interaction: discord.Interaction, repeattime:str):
         """changes autoconfig time in minutes"""
         await self.autorun.changerepeattime(interaction, repeattime)
-
-    @app_commands.command(
-        name = "list",
-        description = "Lists servers with specific properties")
-
-    async def list(self, interaction: discord.Interaction, listmode:str, sortproperties:str):
-        """command to List specific servers"""
-        await self.listcmd.main(interaction, listmode, sortproperties)
 
 async def setup(bot: commands.Bot) -> None:
     """Cogs setup func"""
