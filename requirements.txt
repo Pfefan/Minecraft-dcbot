@@ -1,6 +1,6 @@
 discord.py==2.0.1
 matplotlib==3.5.2
 mcstatus==9.0.4
-requests==2.25.1
+requests==2.31.0
 SQLAlchemy==1.4.31
 prettytable==3.4.1
